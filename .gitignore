@@ -1,10 +1,35 @@
-.DS_Store
-/compile_commands.json
-
+# Build folders
 build/
-externals/
-.cache/
-
 *.o
-*.out
-*.exe
+*.obj
+*.so
+*.dll
+*.dylib
+
+# Virtual environment
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE/Editor settings
+.vscode/
+.idea/
+*.swp
+
+# Conan
+conan.lock
+conanbuildinfo.*
+build/
+CMakeUserPresets.json
+
+# Logs and debugging
+*.log
+*.tmp
+*.bak
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+compile_commands.json

@@ -12,6 +12,7 @@ Newton's Fall is a simulation game designed for casual and competitive gamers wh
 - [User Stories](./docs/UserStories.md)
 - [Backlog](./docs/Backlog.md)
 - [Planning](./docs/Planning.md)
+- [Setup](./docs/Setup.md)
 
 ## Team Members
 

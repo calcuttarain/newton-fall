@@ -1,17 +1,12 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
+project(${PROJECT_NAME} LANGUAGES CXX)
 
-project(Newton's_Fall VERSION 1.0)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+add_executable(${PROJECT_NAME} src/main.cpp)
 
-# box2d
-include_directories("./externals/Box2D/include")
-link_directories("./externals/Box2D/build/src")
+find_package(box2d REQUIRED)
+find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 
-# sfml
-find_package(SFML 2.6.2 COMPONENTS graphics window system REQUIRED)
-
-add_executable(test src/test.cpp)
-
-target_link_libraries(test box2d sfml-graphics sfml-window sfml-system)
+target_link_libraries(${PROJECT_NAME} PRIVATE box2d::box2d sfml-graphics sfml-window sfml-system)

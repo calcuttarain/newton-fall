@@ -1,0 +1,41 @@
+name: Build on Multiple Platforms and run
+
+on: 
+  push:
+    branches:
+      - setup-project
+  pull_request:
+    branches:
+      - setup-project
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install Conan
+      run: pip3 install conan
+
+    - name: Create Conan default profile
+      run: |
+        conan profile detect --force
+      
+    - name: Install dependencies
+      run: conan install . --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
+      
+    - name: Configure and build
+      run: conan build .
+
+    - name: please run!!
+      run: ./build/Release/bin/newtons_fall
