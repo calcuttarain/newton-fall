@@ -32,4 +32,5 @@ CMakeUserPresets.json
 .DS_Store
 Thumbs.db
 
+.cache/
 compile_commands.json
