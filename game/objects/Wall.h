@@ -20,8 +20,9 @@ private:
     b2BodyId leftWallId;
     b2BodyId rightWallId;
 
-    sf::VertexArray leftLineStrip;  
-    sf::VertexArray rightLineStrip;  
+    sf::VertexArray leftWallVisual;
+    sf::VertexArray rightWallVisual;
+
 
     PerlinNoise perlinNoise;
 
@@ -32,7 +33,7 @@ private:
 
     void createShape(const b2BodyId& wallId, const std::vector<b2Vec2>& points);
 
-    void createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArray& lineStrip);
+    void createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArray& wallVisual, bool isLeftWall);
 
     void generatePerlinNoise();
 

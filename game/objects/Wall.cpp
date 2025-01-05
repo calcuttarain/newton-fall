@@ -22,8 +22,9 @@ Wall::Wall(const World &world, const WallConfig& config) : config(config), perli
     createShape(leftWallId, leftWallpoints);
     createShape(rightWallId, rightWallpoints);
 
-    createGraphicsObject(leftWallpoints, leftLineStrip);
-    createGraphicsObject(rightWallpoints, rightLineStrip);
+    createGraphicsObject(leftWallpoints, leftWallVisual, true);
+    createGraphicsObject(rightWallpoints, rightWallVisual, false);
+
 }
 
 void Wall::processPoints() {
@@ -47,19 +48,33 @@ void Wall::createShape(const b2BodyId& wallId, const std::vector<b2Vec2>& points
   b2CreateChain(wallId, &chainDef);
 }
 
-//todo: sa se coloreze tot ce e de-a stanga zidului din stanga si invers
-void Wall::createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArray& lineStrip) {
-    // Create SFML visual representation using line strip
-    lineStrip.setPrimitiveType(sf::LineStrip);
-    lineStrip.resize(points.size());
-    
-    for (size_t i = 0; i < points.size(); i++) {
-        lineStrip[i].position = sf::Vector2f(points[i].x, points[i].y);
-        lineStrip[i].color = sf::Color::Black;
+void Wall::createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArray& wallVisual, bool isLeftWall) {
+    //folosesc TriangleFan in loc de LineStrip ca sa coloreze tot zidul
+    wallVisual.setPrimitiveType(sf::TriangleFan);
+
+    if (isLeftWall) 
+    {
+        wallVisual.append(sf::Vertex(sf::Vector2f(-100.f, points.front().y), sf::Color::Black));
+
+        for (const auto& point : points) 
+            wallVisual.append(sf::Vertex(sf::Vector2f(point.x, point.y), sf::Color::Black));
+
+        wallVisual.append(sf::Vertex(sf::Vector2f(-100.f, points.back().y), sf::Color::Black));
+    } 
+
+    else 
+    {
+        wallVisual.append(sf::Vertex(sf::Vector2f(100.f, points.front().y), sf::Color::Black));
+
+        for (const auto& point : points) 
+            wallVisual.append(sf::Vertex(sf::Vector2f(point.x, point.y), sf::Color::Black));
+
+        wallVisual.append(sf::Vertex(sf::Vector2f(100.f, points.back().y), sf::Color::Black));
     }
 }
 
+
 void Wall::render(sf::RenderWindow &window) {
-    window.draw(leftLineStrip);
-    window.draw(rightLineStrip);
+    window.draw(rightWallVisual);
+    window.draw(leftWallVisual);
 }
