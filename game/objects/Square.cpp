@@ -17,7 +17,7 @@
  * @param density Mass per unit area
  * @param friction Coefficient of friction
  */
-Square::Square(const World &world, SquareConfig config)
+Square::Square(const World &world, const SquareConfig& config)
     : config(config) {
   b2BodyDef squareDef = b2DefaultBodyDef();
 

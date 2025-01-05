@@ -47,6 +47,7 @@ void Wall::createShape(const b2BodyId& wallId, const std::vector<b2Vec2>& points
   b2CreateChain(wallId, &chainDef);
 }
 
+//todo: sa se coloreze tot ce e de-a stanga zidului din stanga si invers
 void Wall::createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArray& lineStrip) {
     // Create SFML visual representation using line strip
     lineStrip.setPrimitiveType(sf::LineStrip);
@@ -54,7 +55,7 @@ void Wall::createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArr
     
     for (size_t i = 0; i < points.size(); i++) {
         lineStrip[i].position = sf::Vector2f(points[i].x, points[i].y);
-        lineStrip[i].color = sf::Color::Blue;
+        lineStrip[i].color = sf::Color::Black;
     }
 }
 

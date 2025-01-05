@@ -24,7 +24,7 @@ private:
     void createGraphicsObject() override;
     
     // Health and damage system
-    SquareConfig config;
+    const SquareConfig& config;
     float health;
     float invincibilityTimer;
     bool isInvincible() const;
@@ -43,7 +43,7 @@ private:
 
 public:
     Square();
-    Square(const World &world, SquareConfig config);
+    Square(const World &world, const SquareConfig& config);
 
     void update();
     sf::Vector2f getPosition();

@@ -40,12 +40,14 @@ struct SquareConfig{
 
 struct WallConfig{
     float height = 300.0f; 
-    float spacing = 52.0f;
+    float spacing = 52.0f; //distanta dintre zidul stang si cel drept
 
+    //seed diferit pentru fiecare zid
     int leftWallSeed = 1234;
     int rightWallSeed = 1355;
 
-    unsigned int nodesCount = 30;
+    //pentru testarea acestor 2 parametri de Perlin Noise trebuie citit despre algoritm
+    unsigned int nodesCount = 30; 
     unsigned int samplesCount = 123;
 };
 

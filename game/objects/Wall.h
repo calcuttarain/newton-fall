@@ -30,36 +30,16 @@ private:
 
     const WallConfig& config;
 
-    /**
-     * Creates Box2D chain shape for physics simulation
-     */
     void createShape(const b2BodyId& wallId, const std::vector<b2Vec2>& points);
 
-    /**
-     * Creates SFML visual representation of the wall
-     * Overrides RenderableBody's graphics creation to handle chain shape
-     */
     void createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArray& lineStrip);
 
-    /**
-     * Processes points to reverse their order if needed
-     * 
-     * @param points Vector of points defining the wall's shape
-     * @param reverse If true, reverses point order for proper collision direction
-     * @return Processed vector of points
-     */
     void generatePerlinNoise();
 
     void processPoints();
 
 public:
-    /**
-     * Constructs a wall from a series of points
-     * 
-     * @param world Reference to the physics world
-     * @param points Vector of points defining the wall's shape
-     * @param reversePoints If true, reverses point order for proper collision direction
-     */
     Wall(const World &world, const WallConfig& config);
+
     void render(sf::RenderWindow &window); 
 };
