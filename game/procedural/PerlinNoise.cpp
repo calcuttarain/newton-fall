@@ -32,6 +32,9 @@ void PerlinNoise::generateNoise()
     float nodeStep = std::abs(domain.x - domain.y) / nodeCount;
     float sampleStep = std::abs(domain.x - domain.y) / sampleCount;
 
+    if(!noise.empty())
+        noise.clear();
+
     //dau push in vectorul rezultat la coordonata de pe axa OY unde se afla sample-urile
     for(int i = 1; i <= sampleCount; i++)
         //noise-ul pt zid e pe axa OX
