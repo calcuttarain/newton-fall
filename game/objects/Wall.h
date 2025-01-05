@@ -11,14 +11,12 @@
  * 
  * Represents a static chain-based wall in the game world.
  * Combines Box2D chain shape physics with SFML line-based rendering.
- * Walls are constructed from a series of connected points to form
- * complex shapes like sine waves with noise.
  */
 class Wall : public RenderableBody {
 private:
     b2ChainId chainId;
     std::vector<b2Vec2> points;
-    sf::VertexArray lineStrip;  //instead of using ConvexShape
+    sf::VertexArray lineStrip;  
 
     /**
      * Creates Box2D chain shape for physics simulation

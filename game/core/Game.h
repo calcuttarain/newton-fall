@@ -1,10 +1,10 @@
 #pragma once
 
-#include "GameConfig.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <box2d/box2d.h>
 
+#include "GameConfig.h"
 #include "Background.h"
 #include "Camera.h"
 #include "Ground.h"

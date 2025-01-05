@@ -81,9 +81,6 @@ void Game::run() {
 
         b2World_Step(world.getWorldId(), timeStep, 8);
 
-        // Process collision events directly in square
-        square.processContactEvents(world.getWorldId());
-
         window.clear();
 
         update();
@@ -105,6 +102,7 @@ void Game::render() {
 }
 
 void Game::update() {
+    square.processContactEvents(world.getWorldId());
     float deltaTime = 1.0f / config.fps;
     square.update(deltaTime);
     camera.follow(square.getPosition());

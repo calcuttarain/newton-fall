@@ -13,11 +13,13 @@ include_directories(
     "${CMAKE_SOURCE_DIR}/game/objects"
     "${CMAKE_SOURCE_DIR}/game/graphics"
     "${CMAKE_SOURCE_DIR}/game/core"
+    "${CMAKE_SOURCE_DIR}/game/procedural"
 )
 file(GLOB OBJECTS_SOURCES
     "${CMAKE_SOURCE_DIR}/game/objects/*.cpp"
     "${CMAKE_SOURCE_DIR}/game/graphics/*.cpp"
     "${CMAKE_SOURCE_DIR}/game/core/*.cpp"
+    "${CMAKE_SOURCE_DIR}/game/procedural/*.cpp"
 )
 
 add_executable(${PROJECT_NAME} game/main.cpp ${OBJECTS_SOURCES})

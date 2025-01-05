@@ -15,7 +15,7 @@ struct GameConfig {
 
     // Ground parameters
     b2Vec2 groundPosition{0.0f, 0.0f};    // Position relative to world center
-    b2Vec2 groundSize{32.0f, 9.0f};       // Width and height in meters
+    b2Vec2 groundSize{90.0f, 30.0f};       // Width and height in meters
 
     // Square entity configuration
     b2Vec2 squarePosition{0.0f, 300.0f};  // Initial spawn position
@@ -34,9 +34,13 @@ struct GameConfig {
     float fps = 120.0f;                            // Target frame rate
 
     // Wall generation parameters
-    float wallHeight = 300.0f;    // Total height of walls
-    float wallSpacing = 32.0f;    // Distance between walls
+    float wallHeight = 330.0f;    // Total height of walls
+    float wallSpacing = 50.0f;    // Distance between walls
     float amplitude = 6.0f;       // Max sine wave deviation
     float frequency = 0.2f;       // Sine wave frequency
-    int pointsCount = 8000;       // Wall resolution (vertex count)
+    int pointsCount = 800;       // Wall resolution (vertex count)
+
+    float wallMin = 0.f;
+    float wallMax = 330.f;
+
 };
