@@ -1,7 +1,8 @@
 #include "World.h"
+#include "GameConfig.h"
 #include "box2d/id.h"
 
-World::World(const GameConfig& config) : config(config) {
+World::World(const WorldConfig& config) : config(config) {
     b2WorldDef worldDef = b2DefaultWorldDef();
     worldDef.gravity = config.gravity;
     worldId = b2CreateWorld(&worldDef);

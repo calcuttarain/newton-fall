@@ -14,11 +14,11 @@ std::vector<b2Vec2> Game::generateWallPoints(float xOffset, bool mirror) {
     std::mt19937 gen(rd());
     std::normal_distribution<float> noise(0.0f, 0.2f);
 
-    float heightStep = config.wallHeight / (config.pointsCount - 1);
+    float heightStep = config.wallConfig.wallHeight / (config.wallConfig.pointsCount - 1);
     
-    for (int i = 0; i < config.pointsCount; i++) {
+    for (int i = 0; i < config.wallConfig.pointsCount; i++) {
         float y = i * heightStep;
-        float x = config.amplitude * std::sin(config.frequency * y);
+        float x = config.wallConfig.amplitude * std::sin(config.wallConfig.frequency * y);
         x += noise(gen);  // Add noise
         if (mirror) x = -x;
         points.push_back({x + xOffset, y});
@@ -36,17 +36,16 @@ std::vector<b2Vec2> Game::generateWallPoints(float xOffset, bool mirror) {
  * - Camera and background
  */
 Game::Game()
-    : world(config),  // Updated constructor call
-      ground(world, config.groundPosition, config.groundSize),
-      square(world, config.squarePosition, config.squareSize,
-             config.squareDensity, config.squareFriction),
-      leftWall(world, generateWallPoints(-config.wallSpacing/2), false),  // Reverse points for left wall
-      rightWall(world, generateWallPoints(config.wallSpacing/2, true), true), // Keep original order for right wall
-      background(config.backgroundSize), 
-      camera(config.viewSize) {
-    window.create(sf::VideoMode(config.windowSize.x, config.windowSize.y),
+    : world(config.worldConfig),  
+      ground(world, config.groundConfig),
+      square(world, config.squareConfig),
+      leftWall(world, generateWallPoints(-config.wallConfig.wallSpacing/2), false),  // Reverse points for left wall
+      rightWall(world, generateWallPoints(config.wallConfig.wallSpacing/2, true), true), // Keep original order for right wall
+      background(config.displayConfig.backgroundSize), 
+      camera(config.displayConfig.viewSize) {
+    window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
                  "Newton's Fall");
-    window.setFramerateLimit(config.fps);
+    window.setFramerateLimit(config.displayConfig.fps);
 }
 
 /**
@@ -59,7 +58,7 @@ Game::Game()
  * - Rendering
  */
 void Game::run() {
-    float timeStep = 1.0f / config.fps;
+    float timeStep = 1.0f / config.displayConfig.fps;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -103,7 +102,7 @@ void Game::render() {
 
 void Game::update() {
     square.processContactEvents(world.getWorldId());
-    float deltaTime = 1.0f / config.fps;
+    float deltaTime = 1.0f / config.displayConfig.fps;
     square.update(deltaTime);
     camera.follow(square.getPosition());
 }
