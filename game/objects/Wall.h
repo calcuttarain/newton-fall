@@ -1,10 +1,13 @@
 #pragma once
 
+#include "GameConfig.h"
+#include "PerlinNoise.h"
 #include "RenderableBody.h"
 #include "World.h"
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <box2d/id.h>
+#include <box2d/math_functions.h>
 
 /**
  * Wall Class
@@ -12,22 +15,31 @@
  * Represents a static chain-based wall in the game world.
  * Combines Box2D chain shape physics with SFML line-based rendering.
  */
-class Wall : public RenderableBody {
+class Wall {
 private:
-    b2ChainId chainId;
-    std::vector<b2Vec2> points;
-    sf::VertexArray lineStrip;  
+    b2BodyId leftWallId;
+    b2BodyId rightWallId;
+
+    sf::VertexArray leftLineStrip;  
+    sf::VertexArray rightLineStrip;  
+
+    PerlinNoise perlinNoise;
+
+    std::vector<b2Vec2> leftWallpoints;
+    std::vector<b2Vec2> rightWallpoints;
+
+    const WallConfig& config;
 
     /**
      * Creates Box2D chain shape for physics simulation
      */
-    void createShape(std::vector<b2Vec2> points);
+    void createShape(const b2BodyId& wallId, const std::vector<b2Vec2>& points);
 
     /**
      * Creates SFML visual representation of the wall
      * Overrides RenderableBody's graphics creation to handle chain shape
      */
-    void createGraphicsObject() override;
+    void createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArray& lineStrip);
 
     /**
      * Processes points to reverse their order if needed
@@ -36,7 +48,9 @@ private:
      * @param reverse If true, reverses point order for proper collision direction
      * @return Processed vector of points
      */
-    std::vector<b2Vec2> processPoints(std::vector<b2Vec2> points, bool reverse);
+    void generatePerlinNoise();
+
+    void processPoints();
 
 public:
     /**
@@ -46,6 +60,6 @@ public:
      * @param points Vector of points defining the wall's shape
      * @param reversePoints If true, reverses point order for proper collision direction
      */
-    Wall(const World &world, std::vector<b2Vec2> points, bool reversePoints = false);
-    void render(sf::RenderWindow &window) override; 
+    Wall(const World &world, const WallConfig& config);
+    void render(sf::RenderWindow &window); 
 };

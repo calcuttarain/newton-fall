@@ -1,15 +1,15 @@
 #include "PerlinNoise.h"
 #include <box2d/math_functions.h>
 
-void PerlinNoise::generate(b2Vec2 domain, unsigned int nodeCount, unsigned int sampleCount)
+std::vector<b2Vec2> PerlinNoise::generate(unsigned int seed)
 {
-    this->domain = domain;
-    this->nodeCount = nodeCount;
-    this->sampleCount = sampleCount;
+    this->seed = seed;
 
     generateGradients();
     
     generateNoise();
+
+    return this->noise;
 }
 
 void PerlinNoise::generateGradients()
@@ -73,9 +73,4 @@ float PerlinNoise::computeSampleNoise(float leftNode, float rightNode, int leftG
 
     return  (1 - tSmooth) * dotLeft + tSmooth * dotRight;
 
-}
-
-std::vector <b2Vec2> PerlinNoise::getNoise()
-{
-    return this->noise;
 }

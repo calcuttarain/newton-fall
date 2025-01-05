@@ -35,17 +35,8 @@ private:
     // Game entities
     Ground ground;           // Static ground platform
     Square square;           // Player controlled entity
-    Wall leftWall;          // Level boundaries
-    Wall rightWall;
+    Wall wall;          // Level boundaries
     Background background;   // Parallax background
-
-    /**
-     * Generates wall vertex data using sine wave with noise
-     * @param xOffset Horizontal displacement from center
-     * @param mirror If true, mirrors the pattern
-     * @return Vector of vertex positions
-     */
-    std::vector<b2Vec2> generateWallPoints(float xOffset, bool mirror = false);
 
     void update();  // Updates game state
     void render();  // Renders frame

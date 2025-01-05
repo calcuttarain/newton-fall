@@ -27,11 +27,7 @@ private:
     float computeSampleNoise(float leftNode, float rightNode, int leftGradient, int rightGradient, float sample);
 
 public:
-    //constructor doar cu seed
-    PerlinNoise(unsigned int seed) : seed(seed) {}
+    PerlinNoise(b2Vec2 domain, unsigned int nodeCount, unsigned int sampleCount) : domain(domain), nodeCount(nodeCount), sampleCount(sampleCount) {}
 
-    //se pot genera mape diferite pentru acelasi seed. functia generate de fiecare data cand e apelata recalculeaza cu noii parametri totul
-    void generate(b2Vec2 domain, unsigned int nodeCount, unsigned int sampleCount);
-
-    std::vector <b2Vec2> getNoise();
+    std::vector <b2Vec2> generate(unsigned int seed);
 };

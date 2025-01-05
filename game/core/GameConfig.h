@@ -2,6 +2,7 @@
 
 #include <SFML/System/Vector2.hpp>
 #include <box2d/box2d.h>
+#include <box2d/math_functions.h>
 
 /**
  * Game Parameters
@@ -38,11 +39,14 @@ struct SquareConfig{
 };
 
 struct WallConfig{
-    float wallHeight = 300.0f; // Total height of walls
-    float wallSpacing = 32.0f; // Distance between walls
-    float amplitude = 6.0f;    // Max sine wave deviation
-    float frequency = 0.2f;    // Sine wave frequency
-    int pointsCount = 8000;    // Wall resolution (vertex count)
+    float height = 300.0f; 
+    float spacing = 52.0f;
+
+    int leftWallSeed = 1234;
+    int rightWallSeed = 1355;
+
+    unsigned int nodesCount = 30;
+    unsigned int samplesCount = 123;
 };
 
 struct GameConfig {
