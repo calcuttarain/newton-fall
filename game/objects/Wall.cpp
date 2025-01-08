@@ -49,30 +49,21 @@ void Wall::createShape(const b2BodyId& wallId, const std::vector<b2Vec2>& points
 }
 
 void Wall::createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArray& wallVisual, bool isLeftWall) {
-    //folosesc TriangleFan in loc de LineStrip ca sa coloreze tot zidul
-    wallVisual.setPrimitiveType(sf::TriangleFan);
+    // folosesc TriangleStrip pentru a construi peretii, TriangleFan avea artefacte
+    wallVisual.setPrimitiveType(sf::TriangleStrip);
 
-    if (isLeftWall) 
-    {
-        wallVisual.append(sf::Vertex(sf::Vector2f(-100.f, points.front().y), sf::Color::Black));
-
-        for (const auto& point : points) 
-            wallVisual.append(sf::Vertex(sf::Vector2f(point.x, point.y), sf::Color::Black));
-
-        wallVisual.append(sf::Vertex(sf::Vector2f(-100.f, points.back().y), sf::Color::Black));
-    } 
-
-    else 
-    {
-        wallVisual.append(sf::Vertex(sf::Vector2f(100.f, points.front().y), sf::Color::Black));
-
-        for (const auto& point : points) 
-            wallVisual.append(sf::Vertex(sf::Vector2f(point.x, point.y), sf::Color::Black));
-
-        wallVisual.append(sf::Vertex(sf::Vector2f(100.f, points.back().y), sf::Color::Black));
+    if (isLeftWall) {
+        for (const auto& point : points) {
+            wallVisual.append(sf::Vertex(sf::Vector2f(-100.f, point.y), sf::Color::Black));
+            wallVisual.append(sf::Vertex(sf::Vector2f(point.x, point.y), sf::Color::Black)); 
+        }
+    } else {
+        for (const auto& point : points) {
+            wallVisual.append(sf::Vertex(sf::Vector2f(point.x, point.y), sf::Color::Black)); 
+            wallVisual.append(sf::Vertex(sf::Vector2f(100.f, point.y), sf::Color::Black));  
+        }
     }
 }
-
 
 void Wall::render(sf::RenderWindow &window) {
     window.draw(rightWallVisual);

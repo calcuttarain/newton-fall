@@ -47,8 +47,8 @@ struct WallConfig{
     int rightWallSeed = 1355;
 
     //pentru testarea acestor 2 parametri de Perlin Noise trebuie citit despre algoritm
-    unsigned int nodesCount = 30; 
-    unsigned int samplesCount = 123;
+    unsigned int nodesCount = 330; //mai multe puncte, mai multe neregularitati 
+    unsigned int samplesCount = 223; //mai multe puncte, mai smooth
 };
 
 struct GameConfig {

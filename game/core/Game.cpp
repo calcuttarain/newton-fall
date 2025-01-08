@@ -46,12 +46,12 @@ void Game::run() {
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
                 b2Vec2 velocity = b2Body_GetLinearVelocity(square.getId());
-                b2Body_SetLinearVelocity(square.getId(), (b2Vec2){-5.0f, velocity.y});
+                b2Body_SetLinearVelocity(square.getId(), (b2Vec2){-15.0f, velocity.y});
             }
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
                 b2Vec2 velocity = b2Body_GetLinearVelocity(square.getId());
-                b2Body_SetLinearVelocity(square.getId(), (b2Vec2){5.0f, velocity.y});
+                b2Body_SetLinearVelocity(square.getId(), (b2Vec2){15.0f, velocity.y});
             }
         }
 
