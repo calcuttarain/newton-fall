@@ -55,7 +55,7 @@ void Game::run() {
             }
         }
 
-        b2World_Step(world.getWorldId(), timeStep, 8);
+        b2World_Step(world.getWorldId(), timeStep, 16);
 
         window.clear();
 

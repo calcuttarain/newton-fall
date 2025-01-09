@@ -5,7 +5,7 @@
 #include "World.h"
 #include <box2d/math_functions.h>
 
-Wall::Wall(const World &world, const WallConfig& config) : config(config), perlinNoise((b2Vec2) {config.height, 0.f}, config.nodesCount, config.samplesCount) {
+Wall::Wall(const World &world, const WallConfig& config) : config(config), perlinNoise((b2Vec2) {config.height, 0.f}, config.nodesCount, config.samplesCount, config.octavesCount, config.amplitude, config.persistance) {
     //box2d wall definition
     b2BodyDef wallDef = b2DefaultBodyDef();
     wallDef.type = b2_staticBody;

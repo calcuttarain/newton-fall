@@ -28,27 +28,29 @@ struct GroundConfig{
 };
 
 struct SquareConfig{
-    b2Vec2 position{0.0f, 300.0f}; // Initial spawn position
+    b2Vec2 position{0.0f, 1000.0f}; // Initial spawn position
     b2Vec2 size{4.0f, 4.0f};       // Width and height
     float density{1.0f};           // Mass per unit area
-    float friction{0.05f};         // Surface friction coefficient
+    float friction{0.f};         // Surface friction coefficient
     float bounciness{0.5f};        // Restitution coefficient
     float damageThreshold{10.0f};  // Minimum impact for damage
-    float maxHealth{300.0f};       // Starting health points
+    float maxHealth{200.0f};       // Starting health points
     float invincibilityTime{1.0f}; // Seconds of invulnerability after hit
 };
 
 struct WallConfig{
-    float height = 300.0f; 
-    float spacing = 52.0f; //distanta dintre zidul stang si cel drept
+    float height = 1060.0f; 
+    float spacing = 40.0f; //distanta dintre zidul stang si cel drept
 
     //seed diferit pentru fiecare zid
     int leftWallSeed = 1234;
     int rightWallSeed = 1355;
 
-    //pentru testarea acestor 2 parametri de Perlin Noise trebuie citit despre algoritm
-    unsigned int nodesCount = 330; //mai multe puncte, mai multe neregularitati 
-    unsigned int samplesCount = 223; //mai multe puncte, mai smooth
+    unsigned int nodesCount = 90; 
+    unsigned int samplesCount = 20000; //in cate puncte e calculat noise-ul
+    unsigned int octavesCount = 15; //detaliile
+    float amplitude = 1.2f; //amplitudinea primei octave
+    float persistance = 0.8f; //subunitar, cat de repede scade amplitudinea la fiecare octava
 };
 
 struct GameConfig {
