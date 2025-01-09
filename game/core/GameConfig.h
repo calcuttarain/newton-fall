@@ -43,14 +43,14 @@ struct WallConfig{
     float spacing = 40.0f; //distanta dintre zidul stang si cel drept
 
     //seed diferit pentru fiecare zid
-    int leftWallSeed = 1234;
-    int rightWallSeed = 1355;
+    int leftWallSeed = 1284;
+    int rightWallSeed = 1455;
 
-    unsigned int nodesCount = 90; 
+    unsigned int nodesCount = 50; //100 
     unsigned int samplesCount = 20000; //in cate puncte e calculat noise-ul
-    unsigned int octavesCount = 15; //detaliile
-    float amplitude = 1.2f; //amplitudinea primei octave
-    float persistance = 0.8f; //subunitar, cat de repede scade amplitudinea la fiecare octava
+    unsigned int octavesCount = 3; //detaliile
+    float amplitude = 3.f; //amplitudinea primei octave //1.5
+    float persistance = 0.6f; //subunitar, cat de repede scade amplitudinea la fiecare octava //0.7
 };
 
 struct GameConfig {

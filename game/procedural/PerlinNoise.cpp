@@ -15,6 +15,8 @@ std::vector<b2Vec2> PerlinNoise::generate(unsigned int seed)
     for(int i = 1; i <= octavesCount; i++)
         generateOctaveNoise(i);
 
+    /*normalizeFirstOctaveNoise(0.f, 30.f);*/
+
     return this->noise;
 }
 
@@ -33,6 +35,8 @@ std::vector<int> PerlinNoise::generateGradients(unsigned int gradientsCount)
 
 void PerlinNoise::generateOctaveNoise(int currentOctave)
 {
+    float mini = 1000.f;
+    float maxi = -1000.f;
     int currentNodeCount = nodeCount * std::pow(2, currentOctave);
     float currentAmplitude = amplitude * std::pow(persistance, currentOctave);
     if(currentOctave == 1)
@@ -58,10 +62,16 @@ void PerlinNoise::generateOctaveNoise(int currentOctave)
             leftGradientIndex++;
         }
 
-        noise[i].x = noise[i].x + currentAmplitude * computeSampleNoise(leftNodePosition, leftNodePosition + nodeStep, gradients[leftGradientIndex], gradients[leftGradientIndex + 1], position);
+        float currentSampleNoise = computeSampleNoise(leftNodePosition, leftNodePosition + nodeStep, gradients[leftGradientIndex], gradients[leftGradientIndex + 1], position);
+
+        noise[i].x = noise[i].x + currentAmplitude * currentSampleNoise;
+
+        if(currentSampleNoise > maxi)
+            maxi = currentSampleNoise;
+        else if(currentSampleNoise < mini)
+            mini = currentSampleNoise;
     }
 }
-
 
 float PerlinNoise::computeSampleNoise(float leftNode, float rightNode, int leftGradient, int rightGradient, float sample)
 {
@@ -73,8 +83,24 @@ float PerlinNoise::computeSampleNoise(float leftNode, float rightNode, int leftG
 
     float t = (sample - leftNode) / (rightNode - leftNode);
 
-    float tSmooth = t * t * t * (10 - 15 * t + 6 * t * t);
+    float tSmooth = t * t * (3 - 2 * t);
 
-    return  (1 - tSmooth) * dotLeft + tSmooth * dotRight;
+    return std::clamp((1 - tSmooth) * dotLeft + tSmooth * dotRight, -1.0f, 1.0f);
 
+}
+
+void PerlinNoise::normalizeFirstOctaveNoise(float minValue, float maxValue)
+{
+    float min_x = noise[0].x;
+    float max_x = noise[0].x;
+
+    for (const auto& point : noise) {
+        min_x = std::min(min_x, point.x);
+        max_x = std::max(max_x, point.x);
+    }
+
+    for (auto& point : noise) {
+        float normalized_x = minValue + ((point.x - min_x) * (maxValue - minValue)) / (max_x - min_x);
+        point.x = normalized_x;
+    }
 }
