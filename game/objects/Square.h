@@ -20,10 +20,11 @@
 class Square : public RenderableBody {
 private:
     // Core physics and graphics setup
-    void createShape(b2Vec2 size, float density, float friction);
+    void createShape();
     void createGraphicsObject() override;
     
     // Health and damage system
+    const SquareConfig& config;
     float health;
     float invincibilityTimer;
     bool isInvincible() const;
@@ -39,12 +40,10 @@ private:
     sf::Shader shader;
     sf::Clock shaderClock;
     void updateShader();
-    
-    const GameConfig& config;
 
 public:
     Square();
-    Square(const World &world, b2Vec2 position, b2Vec2 size, float density, float friction);
+    Square(const World &world, const SquareConfig& config);
 
     void update();
     sf::Vector2f getPosition();

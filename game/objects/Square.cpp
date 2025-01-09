@@ -1,4 +1,5 @@
 #include "Square.h"
+#include "GameConfig.h"
 #include "box2d/id.h"
 #include "box2d/math_functions.h"
 #include <SFML/Graphics/Color.hpp>
@@ -16,19 +17,19 @@
  * @param density Mass per unit area
  * @param friction Coefficient of friction
  */
-Square::Square(const World &world, b2Vec2 position, b2Vec2 size, float density, float friction)
-    : config(world.getConfig()) {
+Square::Square(const World &world, const SquareConfig& config)
+    : config(config) {
   b2BodyDef squareDef = b2DefaultBodyDef();
 
-  squareDef.position = position;
+  squareDef.position = config.position;
   squareDef.type = b2_dynamicBody;
   squareDef.userData = this; 
 
   this->id = b2CreateBody(world.getWorldId(), &squareDef);
-  createShape(size, density, friction);
+  createShape();
   createGraphicsObject();
   previousVelocity = {0.0f, 0.0f}; 
-  health = config.squareMaxHealth;
+  health = config.maxHealth;
   invincibilityTimer = 0.0f;
   std::cout << "Square health: " << health << std::endl;
 
@@ -36,18 +37,18 @@ Square::Square(const World &world, b2Vec2 position, b2Vec2 size, float density, 
   if (!shader.loadFromFile("game/assets/square.frag", sf::Shader::Fragment)) {
       std::cerr << "Failed to load square shader!" << std::endl;
   } else {
-      shader.setUniform("u_maxHealth", config.squareMaxHealth);
+      shader.setUniform("u_maxHealth", config.maxHealth);
       std::cout << "Square shader loaded successfully!" << std::endl;
   }
 }
 
-void Square::createShape(b2Vec2 size, float density, float friction) {
-  b2Polygon dynamicBox = b2MakeBox(size.x / 2.0f, size.y / 2.0f);
+void Square::createShape() {
+  b2Polygon dynamicBox = b2MakeBox(config.size.x / 2.0f, config.size.y / 2.0f);
   b2ShapeDef shapeDef = b2DefaultShapeDef();
 
-  shapeDef.density = density;
-  shapeDef.friction = friction;
-  shapeDef.restitution = config.squareBounciness;  // bouncing
+  shapeDef.density = config.density;
+  shapeDef.friction = config.friction;
+  shapeDef.restitution = config.bounciness;  // bouncing
 
   this->shapeId = b2CreatePolygonShape(this->id, &shapeDef, &dynamicBox);
 }
@@ -118,7 +119,7 @@ void Square::takeDamage(float amount) {
         
         // Only print if health actually changed and set invincibility
         if (oldHealth != health) {
-            invincibilityTimer = config.squareInvincibilityTime;  // Mutată aici
+            invincibilityTimer = config.invincibilityTime;  // Mutată aici
             std::cout << "Square health reduced by " << (oldHealth - health) 
                      << "! Current health: " << health << std::endl;
         }
@@ -138,7 +139,7 @@ void Square::handleCollision(b2BodyId otherBody, const b2Vec2& currentVelocity) 
         b2Body_SetLinearVelocity(this->id, {currentVelocity.x, 0.0f});
     }
     
-    if (impactValue > config.squareDamageThreshold && !isInvincible()) {
+    if (impactValue > config.damageThreshold && !isInvincible()) {
         takeDamage(impactValue);
     }
 }

@@ -8,11 +8,11 @@
 class World {
 private:
     b2WorldId worldId;
-    const GameConfig& config;
+    const WorldConfig& config;
 
 public:
-    World(const GameConfig& config);
-    const GameConfig& getConfig() const { return config; }
+    World(const WorldConfig& config);
+    const WorldConfig& getConfig() const { return config; }
     b2WorldId getWorldId() const;
 
     ~World();

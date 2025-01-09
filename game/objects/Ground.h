@@ -1,15 +1,17 @@
 #pragma once
 
-#include "World.h"
+#include "GameConfig.h"
 #include "RenderableBody.h"
+#include "World.h"
 #include "box2d/math_functions.h"
 #include <box2d/box2d.h>
 
 class Ground : public RenderableBody {
 private:
-  void createShape(b2Vec2 size);
+  const GroundConfig& config;
+  void createShape();
   void createGraphicsObject() override;
 
 public:
-  Ground(const World &world, b2Vec2 position, b2Vec2 size);
+  Ground(const World &world, const GroundConfig& config);
 };
