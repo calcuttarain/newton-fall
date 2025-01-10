@@ -1,0 +1,6 @@
+numpy
+matplotlib
+
+
+# Conan pentru gestionarea dependențelor C++
+conan
