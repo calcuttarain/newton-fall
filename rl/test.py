@@ -41,12 +41,6 @@ def main():
     
         cv2.destroyAllWindows()
 
-        #     cv2.imshow('Game', cv2.cvtColor(frame, cv2.COLOR_RGBA2BGR))
-            
-        #     if cv2.waitKey(1) & 0xFF == ord('q'):
-        #         break
-    
-        # cv2.destroyAllWindows()
       
     except Exception as e:
         print(f"Error: {e}")
