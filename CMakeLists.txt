@@ -38,6 +38,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 # Python bindings configuration
 pybind11_add_module(bindmodule
     rl/bindings.cpp
+    ${OBJECTS_SOURCES}
 )
 
 target_include_directories(bindmodule PRIVATE
