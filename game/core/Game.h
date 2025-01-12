@@ -29,19 +29,20 @@ private:
     // Core systems
     sf::RenderWindow window;  // Main render window
     sf::Clock clock;         // Game time tracking
-    World world;             // Physics world
-    Camera camera;           // View control
+    std::unique_ptr<World> world;             // Physics world
+    std::unique_ptr<Camera> camera;           // View control
 
     // Game entities
-    Ground ground;           // Static ground platform
-    Square square;           // Player controlled entity
-    Wall wall;          // Level boundaries
-    Background background;   // Parallax background
+    std::unique_ptr<Ground> ground;           // Static ground platform
+    std::unique_ptr<Square> square;           // Player controlled entity
+    std::unique_ptr<Wall> wall;          // Level boundaries
+    std::unique_ptr<Background> background;   // Parallax background
 
     void update();  // Updates game state
     void render();  // Renders frame
 
 public:
     Game();     // Initializes game systems
+    void loadConfig(const GameConfig& newConfig);
     void run(); // Main game loop
 };

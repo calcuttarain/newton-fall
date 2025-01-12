@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(box2d REQUIRED)
 find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 find_package(pybind11 REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 # project
 include_directories(
@@ -21,10 +22,11 @@ file(GLOB OBJECTS_SOURCES
     "${CMAKE_SOURCE_DIR}/game/graphics/*.cpp"
     "${CMAKE_SOURCE_DIR}/game/core/*.cpp"
     "${CMAKE_SOURCE_DIR}/game/procedural/*.cpp"
+
 )
 
 add_executable(${PROJECT_NAME} game/main.cpp ${OBJECTS_SOURCES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE box2d::box2d sfml-graphics sfml-window sfml-system)
+target_link_libraries(${PROJECT_NAME} PRIVATE box2d::box2d sfml-graphics sfml-window sfml-system nlohmann_json::nlohmann_json)
 
 pybind11_add_module(bindmodule rl/bindings.cpp)

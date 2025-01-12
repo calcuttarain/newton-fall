@@ -13,13 +13,14 @@
  * - Player square with initial position
  * - Camera and background
  */
-Game::Game()
-    : world(config.worldConfig),  
-      ground(world, config.groundConfig),
-      square(world, config.squareConfig),
-      wall(world, config.wallConfig),  
-      background(config.displayConfig.backgroundSize), 
-      camera(config.displayConfig.viewSize) {
+Game::Game() {
+    world = std::make_unique<World>(config.worldConfig);
+    ground = std::make_unique<Ground>(*world, config.groundConfig);
+    square = std::make_unique<Square>(*world, config.squareConfig);
+    wall = std::make_unique<Wall>(*world, config.wallConfig);
+    background = std::make_unique<Background>(config.displayConfig.backgroundSize);
+    camera = std::make_unique<Camera>(config.displayConfig.viewSize);
+    
     window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
                  "Newton's Fall");
     window.setFramerateLimit(config.displayConfig.fps);
@@ -45,22 +46,22 @@ void Game::run() {
             }
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                b2Vec2 velocity = b2Body_GetLinearVelocity(square.getId());
-                b2Body_SetLinearVelocity(square.getId(), (b2Vec2){-15.0f, velocity.y});
+                b2Vec2 velocity = b2Body_GetLinearVelocity(square->getId());
+                b2Body_SetLinearVelocity(square->getId(), (b2Vec2){-15.0f, velocity.y});
             }
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-                b2Vec2 velocity = b2Body_GetLinearVelocity(square.getId());
-                b2Body_SetLinearVelocity(square.getId(), (b2Vec2){15.0f, velocity.y});
+                b2Vec2 velocity = b2Body_GetLinearVelocity(square->getId());
+                b2Body_SetLinearVelocity(square->getId(), (b2Vec2){15.0f, velocity.y});
             }
         }
 
-        b2World_Step(world.getWorldId(), timeStep, 16);
+        b2World_Step(world->getWorldId(), timeStep, 16);
 
         window.clear();
 
         update();
-        window.setView(camera.getView());
+        window.setView(camera->getView());
         render();
 
         window.display();
@@ -68,17 +69,31 @@ void Game::run() {
 }
 
 void Game::render() {
-  float u_time = this->clock.getElapsedTime().asSeconds();
-
-  background.render(window, u_time);
-  ground.render(window);
-  square.render(window);
-  wall.render(window);
+    float u_time = clock.getElapsedTime().asSeconds();
+    background->render(window, u_time);
+    ground->render(window);
+    square->render(window);
+    wall->render(window);
 }
 
 void Game::update() {
-    square.processContactEvents(world.getWorldId());
+    square->processContactEvents(world->getWorldId());
     float deltaTime = 1.0f / config.displayConfig.fps;
-    square.update(deltaTime);
-    camera.follow(square.getPosition());
+    square->update(deltaTime);
+    camera->follow(square->getPosition());
+}
+
+void Game::loadConfig(const GameConfig& newConfig) {
+    config = newConfig;
+    
+    window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
+                 "Newton's Fall");
+    window.setFramerateLimit(config.displayConfig.fps);
+    
+    world = std::make_unique<World>(config.worldConfig);
+    ground = std::make_unique<Ground>(*world, config.groundConfig);
+    square = std::make_unique<Square>(*world, config.squareConfig);
+    wall = std::make_unique<Wall>(*world, config.wallConfig);
+    background = std::make_unique<Background>(config.displayConfig.backgroundSize);
+    camera = std::make_unique<Camera>(config.displayConfig.viewSize);
 }

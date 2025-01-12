@@ -10,6 +10,7 @@ class NewtonsFallConan(ConanFile):
         self.requires("box2d/3.0.0")
         self.requires("sfml/2.6.2")
         self.requires("pybind11/2.13.6")
+        self.requires("nlohmann_json/3.11.2")
 
     def layout(self):
         cmake_layout(self)
