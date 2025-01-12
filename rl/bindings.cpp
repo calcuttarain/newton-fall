@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
+#include <pybind11/stl.h>
 #include "Game.h"        
 #include "LoadLevels.h" 
 #include <string>
@@ -28,11 +29,15 @@ PYBIND11_MODULE(bindmodule, m) {
     m.doc() = "Game bindings for Python";
 
     py::class_<Game>(m, "Game")
-        .def(py::init<>())
+        .def(py::init([](bool headless) {
+            try {
+                return std::unique_ptr<Game>(new Game(headless));
+            } catch (const std::exception& e) {
+                throw std::runtime_error(std::string("Game constructor failed: ") + e.what());
+            }
+        }), py::arg("headless") = false)
         .def("loadConfig", &Game::loadConfig)
-        .def("run", &Game::run)
         .def("step", &Game::step)
-        .def("restart", &Game::restart)
         .def("isGameOver", &Game::isGameOver)
         .def("getLastFrame", [](Game& game) {
             return imageToNumpy(game.getLastFrame());

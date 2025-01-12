@@ -25,7 +25,7 @@ int main() {
             std::cout << "Level " << i << " loaded successfully" << std::endl;
         }
         
-        const size_t selectedLevel = 4;  // Acesta este al 5-lea nivel (indice 4)
+        const size_t selectedLevel = 3;  // Acesta este al 5-lea nivel (indice 4)
         std::cout << "\nLoading level " << selectedLevel << std::endl;
         
         if (selectedLevel >= levels.size()) {
