@@ -3,14 +3,29 @@
 #include <iostream>
 
 std::vector<GameConfig> LoadLevels::loadAllLevels(const std::string& levelsPath) {
+    std::vector<std::pair<int, std::string>> levelFiles;
     std::vector<GameConfig> levels;
     
     try {
         for (const auto& entry : std::filesystem::directory_iterator(levelsPath)) {
             if (entry.path().extension() == ".json") {
-                std::cout << "Loading level: " << entry.path().string() << std::endl;
-                levels.push_back(loadLevelFromJson(entry.path().string()));
+                std::string filename = entry.path().stem().string();
+                try {
+                    int index = std::stoi(filename);
+                    levelFiles.push_back({index, entry.path().string()});
+                } catch (const std::exception& e) {
+                    std::cerr << "Skipping " << filename << ": not a number" << std::endl;
+                }
             }
+        }
+
+        // Sortăm după index pentru a menține ordinea corectă
+        std::sort(levelFiles.begin(), levelFiles.end());
+
+        // Încărcăm nivelurile în ordinea sortată
+        for (const auto& [index, path] : levelFiles) {
+            std::cout << "Loading level " << index << " from: " << path << std::endl;
+            levels.push_back(loadLevelFromJson(path));
         }
     } catch (const std::exception& e) {
         std::cerr << "Error loading levels: " << e.what() << std::endl;
