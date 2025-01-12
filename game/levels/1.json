@@ -20,7 +20,11 @@
         "bounciness": 0.45,
         "damageThreshold": 12.0,
         "maxHealth": 180.0,
-        "invincibilityTime": 0.9
+        "invincibilityTime": 0.9,
+        "max_velocity": 25.0,     
+        "acceleration": 1.1,       
+        "deceleration": 0.5
+
     },
     "wall": {
         "height": 1500.0,

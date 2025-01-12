@@ -129,14 +129,12 @@ void Game::step(int action) {
     switch(action) {
         case 1: // LEFT
             {
-                b2Vec2 velocity = b2Body_GetLinearVelocity(square->getId());
-                b2Body_SetLinearVelocity(square->getId(), (b2Vec2){-15.0f, velocity.y});
+                square->handleMovement(true, false);
             }
             break;
         case 2: // RIGHT
             {
-                b2Vec2 velocity = b2Body_GetLinearVelocity(square->getId());
-                b2Body_SetLinearVelocity(square->getId(), (b2Vec2){15.0f, velocity.y});
+                square->handleMovement(false, true);
             }
             break;
     }
