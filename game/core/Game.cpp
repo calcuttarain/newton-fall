@@ -13,22 +13,9 @@
  * - Player square with initial position
  * - Camera and background
  */
-Game::Game(bool instantiate) : instantiate(instantiate){
-    world = std::make_unique<World>(config.worldConfig);
-    ground = std::make_unique<Ground>(*world, config.groundConfig);
-    square = std::make_unique<Square>(*world, config.squareConfig);
-    wall = std::make_unique<Wall>(*world, config.wallConfig);
-    background = std::make_unique<Background>(config.displayConfig.backgroundSize);
-    camera = std::make_unique<Camera>(config.displayConfig.viewSize);
-    
-    if(instantiate)
-    {
-        window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
-                     "Newton's Fall");
-        window.setFramerateLimit(config.displayConfig.fps);
-    }
-    else 
-        texture.create(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y);
+Game::Game(bool instantiate) : instantiate(instantiate) {
+    // Inițializăm doar config, restul se va face în loadConfig
+    // Nu mai creăm obiectele aici
 }
 
 /**
@@ -80,6 +67,12 @@ void Game::update() {
     float deltaTime = 1.0f / config.displayConfig.fps;
     square->update(deltaTime);
     camera->follow(square->getPosition());
+    
+    // Verificăm dacă jocul s-a terminat 
+    if (square->getHealth() <= 0) {
+        gameOver = true;
+        std::cout << "Game Over!" << std::endl;
+    }
 }
 
 void Game::loadConfig(const GameConfig& newConfig) {

@@ -95,6 +95,9 @@ void LoadLevels::parseSquareConfig(const nlohmann::json& j, SquareConfig& config
     if (j.contains("damageThreshold")) config.damageThreshold = j["damageThreshold"];
     if (j.contains("maxHealth")) config.maxHealth = j["maxHealth"];
     if (j.contains("invincibilityTime")) config.invincibilityTime = j["invincibilityTime"];
+    if (j.contains("max_velocity")) config.max_velocity = j["max_velocity"];
+    if (j.contains("acceleration")) config.acceleration = j["acceleration"];
+    if (j.contains("deceleration")) config.deceleration = j["deceleration"];
 }
 
 void LoadLevels::parseWallConfig(const nlohmann::json& j, WallConfig& config) {
