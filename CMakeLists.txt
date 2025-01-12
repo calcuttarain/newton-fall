@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(box2d REQUIRED)
 find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
+find_package(pybind11 REQUIRED)
 
 # project
 include_directories(
@@ -25,3 +26,5 @@ file(GLOB OBJECTS_SOURCES
 add_executable(${PROJECT_NAME} game/main.cpp ${OBJECTS_SOURCES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE box2d::box2d sfml-graphics sfml-window sfml-system)
+
+pybind11_add_module(bindmodule rl/bindings.cpp)
