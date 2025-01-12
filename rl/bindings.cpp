@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include "Game.h"        
+#include <pybind11/stl.h>    // Add this for std::vector support
+#include "RLGame.h"        // Changed from Game.h
 #include "LoadLevels.h" 
 #include <string>
 #include <iostream>
@@ -27,14 +28,14 @@ py::array_t<uint8_t> imageToNumpy(const sf::Image& image) {
 PYBIND11_MODULE(bindmodule, m) {
     m.doc() = "Game bindings for Python";
 
-    py::class_<Game>(m, "Game")
+    py::class_<RLGame>(m, "RLGame")    // Changed from Game
         .def(py::init<>())
-        .def("loadConfig", &Game::loadConfig)
-        .def("run", &Game::run)
-        .def("step", &Game::step)
-        .def("restart", &Game::restart)
-        .def("isGameOver", &Game::isGameOver)
-        .def("getLastFrame", [](Game& game) {
+        .def("loadConfig", &RLGame::loadConfig)
+        .def("run", &RLGame::run)
+        .def("step", &RLGame::step)
+        .def("restart", &RLGame::restart)
+        .def("isGameOver", &RLGame::isRLGameOver)
+        .def("getLastFrame", [](RLGame& game) {    // Changed from Game
             return imageToNumpy(game.getLastFrame());
         });
 

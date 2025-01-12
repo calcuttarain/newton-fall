@@ -97,6 +97,7 @@ void RLGame::step(int action) {
 
     renderTexture.clear();
     render();
+    renderTexture.setView(camera->getView());
     renderTexture.display();
     captureFrame();
 }
