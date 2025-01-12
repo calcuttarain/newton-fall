@@ -25,10 +25,9 @@
 class Game {
 private:
     GameConfig config;      // Central configuration
-    bool headless = false;
 
     // Core systems
-    std::unique_ptr<sf::RenderWindow> window;  // Main render window
+    sf::RenderWindow window;  // Main render window
     sf::Clock clock;         // Game time tracking
     std::unique_ptr<World> world;             // Physics world
     std::unique_ptr<Camera> camera;           // View control
@@ -44,12 +43,9 @@ private:
 
     void update();  // Updates game state
     void render();  // Renders frame
-    void initializeWindow();
-    void cleanupWindow();
 
 public:
-    Game(bool headless = false);     // Initializes game systems
-    ~Game();
+    Game();     // Initializes game systems
     void loadConfig(const GameConfig& newConfig);
     void run(); // Main game loop
     void restart();
