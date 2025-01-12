@@ -38,6 +38,9 @@ private:
     std::unique_ptr<Wall> wall;          // Level boundaries
     std::unique_ptr<Background> background;   // Parallax background
 
+    bool gameOver = false;
+    sf::Image lastFrame;
+
     void update();  // Updates game state
     void render();  // Renders frame
 
@@ -45,4 +48,9 @@ public:
     Game();     // Initializes game systems
     void loadConfig(const GameConfig& newConfig);
     void run(); // Main game loop
+    void restart();
+    void step(int action); // 0=nothing, 1=left, 2=right
+    bool isGameOver() const { return gameOver; }
+    const sf::Image& getLastFrame() const { return lastFrame; }
+    void captureFrame();
 };

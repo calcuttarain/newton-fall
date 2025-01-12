@@ -1,6 +1,6 @@
 numpy
 matplotlib
-
-
-# Conan pentru gestionarea dependențelor C++
+opencv-python
 conan
+
+

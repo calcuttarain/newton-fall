@@ -36,35 +36,19 @@ Game::Game() {
  * - Rendering
  */
 void Game::run() {
-    float timeStep = 1.0f / config.displayConfig.fps;
-
-    while (window.isOpen()) {
+    while (window.isOpen() && !gameOver) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                b2Vec2 velocity = b2Body_GetLinearVelocity(square->getId());
-                b2Body_SetLinearVelocity(square->getId(), (b2Vec2){-15.0f, velocity.y});
-            }
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-                b2Vec2 velocity = b2Body_GetLinearVelocity(square->getId());
-                b2Body_SetLinearVelocity(square->getId(), (b2Vec2){15.0f, velocity.y});
-            }
         }
 
-        b2World_Step(world->getWorldId(), timeStep, 16);
-
-        window.clear();
-
-        update();
-        window.setView(camera->getView());
-        render();
-
-        window.display();
+        int action = 0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) action = 1;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) action = 2;
+        
+        step(action);
     }
 }
 
@@ -96,4 +80,43 @@ void Game::loadConfig(const GameConfig& newConfig) {
     wall = std::make_unique<Wall>(*world, config.wallConfig);
     background = std::make_unique<Background>(config.displayConfig.backgroundSize);
     camera = std::make_unique<Camera>(config.displayConfig.viewSize);
+}
+
+void Game::restart() {
+    loadConfig(config);
+    gameOver = false;
+}
+
+void Game::step(int action) {
+    float timeStep = 1.0f / config.displayConfig.fps;
+    
+    switch(action) {
+        case 1: // LEFT
+            {
+                b2Vec2 velocity = b2Body_GetLinearVelocity(square->getId());
+                b2Body_SetLinearVelocity(square->getId(), (b2Vec2){-15.0f, velocity.y});
+            }
+            break;
+        case 2: // RIGHT
+            {
+                b2Vec2 velocity = b2Body_GetLinearVelocity(square->getId());
+                b2Body_SetLinearVelocity(square->getId(), (b2Vec2){15.0f, velocity.y});
+            }
+            break;
+    }
+
+    b2World_Step(world->getWorldId(), timeStep, 16);
+    update();
+    window.setView(camera->getView());
+    window.clear();
+    render();
+    window.display();
+    captureFrame();
+}
+
+void Game::captureFrame() {
+    sf::Texture texture;
+    texture.create(window.getSize().x, window.getSize().y);
+    texture.update(window);
+    lastFrame = texture.copyToImage();
 }

@@ -25,8 +25,32 @@ file(GLOB OBJECTS_SOURCES
 
 )
 
+# Main executable target configuration
 add_executable(${PROJECT_NAME} game/main.cpp ${OBJECTS_SOURCES})
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+    box2d::box2d 
+    sfml-graphics 
+    sfml-window 
+    sfml-system 
+    nlohmann_json::nlohmann_json
+)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE box2d::box2d sfml-graphics sfml-window sfml-system nlohmann_json::nlohmann_json)
+# Python bindings configuration
+pybind11_add_module(bindmodule
+    rl/bindings.cpp
+)
 
-pybind11_add_module(bindmodule rl/bindings.cpp)
+target_include_directories(bindmodule PRIVATE
+    ${CMAKE_SOURCE_DIR}/game/objects
+    ${CMAKE_SOURCE_DIR}/game/graphics
+    ${CMAKE_SOURCE_DIR}/game/core
+    ${CMAKE_SOURCE_DIR}/game/procedural
+)
+
+target_link_libraries(bindmodule PRIVATE
+    box2d::box2d
+    sfml-graphics
+    sfml-window
+    sfml-system
+    nlohmann_json::nlohmann_json
+)
