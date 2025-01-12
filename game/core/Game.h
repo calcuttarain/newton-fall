@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <box2d/box2d.h>
 
@@ -28,6 +29,7 @@ private:
 
     // Core systems
     sf::RenderWindow window;  // Main render window
+    sf::RenderTexture texture;
     sf::Clock clock;         // Game time tracking
     std::unique_ptr<World> world;             // Physics world
     std::unique_ptr<Camera> camera;           // View control
@@ -39,13 +41,14 @@ private:
     std::unique_ptr<Background> background;   // Parallax background
 
     bool gameOver = false;
+    bool instantiate;
     sf::Image lastFrame;
 
     void update();  // Updates game state
     void render();  // Renders frame
 
 public:
-    Game();     // Initializes game systems
+    Game(bool instantiate = true);     // Initializes game systems
     void loadConfig(const GameConfig& newConfig);
     void run(); // Main game loop
     void restart();

@@ -21,8 +21,8 @@ def main():
             return
 
         # Create game in non-headless mode for visualization
-        game = bindmodule.RLGame()
-        game.loadConfig(levels[0])
+        game = bindmodule.Game()
+        game.loadConfig(levels[4])
 
         # Loop-ul principal
         while not game.isGameOver():

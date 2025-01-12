@@ -14,5 +14,4 @@ private:
 
 public:
   Ground(const World &world, const GroundConfig& config);
-  void RLrender(sf::RenderTexture &window);
 };

@@ -3,6 +3,7 @@
 #include "box2d/id.h"
 #include "box2d/math_functions.h"
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
@@ -203,24 +204,13 @@ void Square::updateShader() {
     shader.setUniform("u_time", shaderClock.getElapsedTime().asSeconds());
 }
 
-void Square::render(sf::RenderWindow &window) {
+void Square::render(sf::RenderTarget &target) {
     if (sf::Shader::isAvailable()) {
         updateShader();
         sf::RenderStates states;
         states.shader = &shader;
-        window.draw(visual, states);
+        target.draw(visual, states);
     } else {
-        window.draw(visual);
-    }
-}
-
-void Square::RLrender(sf::RenderTexture &window) {
-    if (sf::Shader::isAvailable()) {
-        updateShader();
-        sf::RenderStates states;
-        states.shader = &shader;
-        window.draw(visual, states);
-    } else {
-        window.draw(visual);
+        target.draw(visual);
     }
 }

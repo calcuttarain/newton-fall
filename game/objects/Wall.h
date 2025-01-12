@@ -5,6 +5,7 @@
 #include "RenderableBody.h"
 #include "World.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <box2d/box2d.h>
 #include <box2d/id.h>
@@ -42,7 +43,5 @@ private:
 public:
     Wall(const World &world, const WallConfig& config);
 
-    void render(sf::RenderWindow &window); 
-    void RLrender(sf::RenderTexture &window); 
-
+    void render(sf::RenderTarget &target); 
 };

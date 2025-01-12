@@ -13,7 +13,7 @@
  * - Player square with initial position
  * - Camera and background
  */
-Game::Game() {
+Game::Game(bool instantiate) : instantiate(instantiate){
     world = std::make_unique<World>(config.worldConfig);
     ground = std::make_unique<Ground>(*world, config.groundConfig);
     square = std::make_unique<Square>(*world, config.squareConfig);
@@ -21,9 +21,14 @@ Game::Game() {
     background = std::make_unique<Background>(config.displayConfig.backgroundSize);
     camera = std::make_unique<Camera>(config.displayConfig.viewSize);
     
-    window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
-                 "Newton's Fall");
-    window.setFramerateLimit(config.displayConfig.fps);
+    if(instantiate)
+    {
+        window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
+                     "Newton's Fall");
+        window.setFramerateLimit(config.displayConfig.fps);
+    }
+    else 
+        texture.create(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y);
 }
 
 /**
@@ -54,10 +59,20 @@ void Game::run() {
 
 void Game::render() {
     float u_time = clock.getElapsedTime().asSeconds();
-    background->render(window, u_time);
-    ground->render(window);
-    square->render(window);
-    wall->render(window);
+    if(instantiate)
+    {
+        background->render(window, u_time);
+        ground->render(window);
+        square->render(window);
+        wall->render(window);
+    }
+    else 
+    {
+        background->render(texture, u_time);
+        ground->render(texture);
+        square->render(texture);
+        wall->render(texture);
+    }
 }
 
 void Game::update() {
@@ -70,10 +85,15 @@ void Game::update() {
 void Game::loadConfig(const GameConfig& newConfig) {
     config = newConfig;
     
-    window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
-                 "Newton's Fall");
-    window.setFramerateLimit(config.displayConfig.fps);
-    
+    if(instantiate)
+    {
+        window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
+                     "Newton's Fall");
+        window.setFramerateLimit(config.displayConfig.fps);
+    }
+    else 
+        texture.create(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y);
+
     world = std::make_unique<World>(config.worldConfig);
     ground = std::make_unique<Ground>(*world, config.groundConfig);
     square = std::make_unique<Square>(*world, config.squareConfig);
@@ -105,16 +125,24 @@ void Game::step(int action) {
 
     b2World_Step(world->getWorldId(), timeStep, 16);
     update();
-    window.setView(camera->getView());
-    window.clear();
-    render();
-    window.display();
-    captureFrame();
+    if(instantiate)
+    {
+        window.setView(camera->getView());
+        window.clear();
+        render();
+        window.display();
+    }
+    else 
+    {
+        texture.setView(camera->getView());
+        texture.clear();
+        render();
+        texture.display();
+        captureFrame();
+    }
 }
 
 void Game::captureFrame() {
-    sf::Texture texture;
-    texture.create(window.getSize().x, window.getSize().y);
-    texture.update(window);
-    lastFrame = texture.copyToImage();
+    sf::Texture frame = texture.getTexture();
+    lastFrame = frame.copyToImage();
 }

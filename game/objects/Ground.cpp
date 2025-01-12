@@ -33,8 +33,3 @@ void Ground::createGraphicsObject()
   //aici se adauga chestii custom
   this->visual.setFillColor(sf::Color::Black);
 }
-
-void Ground::RLrender(sf::RenderTexture &window)
-{
-  window.draw(this->visual);
-}
