@@ -34,3 +34,7 @@ void Ground::createGraphicsObject()
   this->visual.setFillColor(sf::Color::Black);
 }
 
+void Ground::RLrender(sf::RenderTexture &window)
+{
+  window.draw(this->visual);
+}

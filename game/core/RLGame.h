@@ -28,7 +28,7 @@ private:
     GameConfig config;      // Central configuration
 
     // Core systems
-    sf::RenderTexture window;  // Main render window
+    sf::RenderTexture renderTexture;
     sf::Clock clock;         // RLGame time tracking
     std::unique_ptr<World> world;             // Physics world
     std::unique_ptr<Camera> camera;           // View control
@@ -47,7 +47,7 @@ private:
 
 public:
     RLGame();     // Initializes game systems
-    void loadConfig(const RLGameConfig& newConfig);
+    void loadConfig(const GameConfig& newConfig);
     void run(); // Main game loop
     void restart();
     void step(int action); // 0=nothing, 1=left, 2=right

@@ -69,3 +69,9 @@ void Wall::render(sf::RenderWindow &window) {
     window.draw(rightWallVisual);
     window.draw(leftWallVisual);
 }
+
+void Wall::RLrender(sf::RenderTexture &window)
+{
+    window.draw(rightWallVisual);
+    window.draw(leftWallVisual);
+}

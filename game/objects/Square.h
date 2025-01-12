@@ -4,6 +4,7 @@
 #include "World.h"
 #include "RenderableBody.h"
 #include "box2d/math_functions.h"
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <box2d/box2d.h>
 #include <SFML/Graphics/Shader.hpp>
@@ -54,4 +55,6 @@ public:
     float getHealth() const { return health; }
     void update(float deltaTime);
     void render(sf::RenderWindow &window) override;
+    void RLrender(sf::RenderTexture &window);
+
 };

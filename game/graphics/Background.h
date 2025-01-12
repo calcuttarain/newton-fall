@@ -12,5 +12,6 @@ public:
   Background(sf::Vector2f size);
 
   void render(sf::RenderWindow& window, float u_time);
+  void RLrender(sf::RenderTexture &window, float u_time);
 };
 

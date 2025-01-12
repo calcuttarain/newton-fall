@@ -213,3 +213,14 @@ void Square::render(sf::RenderWindow &window) {
         window.draw(visual);
     }
 }
+
+void Square::RLrender(sf::RenderTexture &window) {
+    if (sf::Shader::isAvailable()) {
+        updateShader();
+        sf::RenderStates states;
+        states.shader = &shader;
+        window.draw(visual, states);
+    } else {
+        window.draw(visual);
+    }
+}

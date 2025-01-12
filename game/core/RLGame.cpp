@@ -20,10 +20,8 @@ RLGame::RLGame() {
     wall = std::make_unique<Wall>(*world, config.wallConfig);
     background = std::make_unique<Background>(config.displayConfig.backgroundSize);
     camera = std::make_unique<Camera>(config.displayConfig.viewSize);
-    
-    window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
-                 "Newton's Fall");
-    window.setFramerateLimit(config.displayConfig.fps);
+
+    renderTexture.create(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y);
 }
 
 /**
@@ -36,28 +34,21 @@ RLGame::RLGame() {
  * - Rendering
  */
 void RLGame::run() {
-    while (window.isOpen() && !gameOver) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-        }
-
+    while (!gameOver) {
         int action = 0;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) action = 1;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) action = 2;
-        
+
         step(action);
     }
 }
 
 void RLGame::render() {
     float u_time = clock.getElapsedTime().asSeconds();
-    background->render(window, u_time);
-    ground->render(window);
-    square->render(window);
-    wall->render(window);
+    background->RLrender(renderTexture, u_time);
+    ground->RLrender(renderTexture);
+    square->RLrender(renderTexture);
+    wall->RLrender(renderTexture);
 }
 
 void RLGame::update() {
@@ -67,13 +58,11 @@ void RLGame::update() {
     camera->follow(square->getPosition());
 }
 
-void RLGame::loadConfig(const RLGameConfig& newConfig) {
+void RLGame::loadConfig(const GameConfig& newConfig) {
     config = newConfig;
-    
-    window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
-                 "Newton's Fall");
-    window.setFramerateLimit(config.displayConfig.fps);
-    
+
+    renderTexture.create(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y);
+
     world = std::make_unique<World>(config.worldConfig);
     ground = std::make_unique<Ground>(*world, config.groundConfig);
     square = std::make_unique<Square>(*world, config.squareConfig);
@@ -89,7 +78,7 @@ void RLGame::restart() {
 
 void RLGame::step(int action) {
     float timeStep = 1.0f / config.displayConfig.fps;
-    
+
     switch(action) {
         case 1: // LEFT
             {
@@ -105,17 +94,15 @@ void RLGame::step(int action) {
 
     b2World_Step(world->getWorldId(), timeStep, 16);
     update();
-    window.setView(camera->getView());
-    window.clear();
+
+    renderTexture.clear();
     render();
-    window.display();
+    renderTexture.display();
     captureFrame();
 }
 
 void RLGame::captureFrame() {
-    sf::Texture texture;
-    texture.create(window.getSize().x, window.getSize().y);
-    texture.update(window);
+    sf::Texture texture = renderTexture.getTexture();
     lastFrame = texture.copyToImage();
 }
 
