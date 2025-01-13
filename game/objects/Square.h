@@ -4,6 +4,8 @@
 #include "World.h"
 #include "RenderableBody.h"
 #include "box2d/math_functions.h"
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <box2d/box2d.h>
 #include <SFML/Graphics/Shader.hpp>
@@ -48,8 +50,10 @@ public:
     void update();
     sf::Vector2f getPosition();
     b2Vec2 getVelocity() const;
+    // Movement
+    void handleMovement(bool isLeftPressed, bool isRightPressed);
     void processContactEvents(b2WorldId worldId);
     float getHealth() const { return health; }
     void update(float deltaTime);
-    void render(sf::RenderWindow &window) override;
+    void render(sf::RenderTarget &target) override;
 };

@@ -36,6 +36,10 @@ struct SquareConfig{
     float damageThreshold{10.0f};  // Minimum impact for damage
     float maxHealth{200.0f};       // Starting health points
     float invincibilityTime{1.0f}; // Seconds of invulnerability after hit
+    // movement
+    float max_velocity = 25.0f;     
+    float acceleration = 1.1f;       
+    float deceleration = 0.5f;
 };
 
 struct WallConfig{
