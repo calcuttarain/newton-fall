@@ -64,6 +64,8 @@ void Game::render() {
 
 void Game::update() {
     square->processContactEvents(world->getWorldId());
+    processGroundCollision();  // Add this line
+    
     float deltaTime = 1.0f / config.displayConfig.fps;
     square->update(deltaTime);
     camera->follow(square->getPosition());
@@ -98,6 +100,7 @@ void Game::loadConfig(const GameConfig& newConfig) {
 void Game::restart() {
     loadConfig(config);
     gameOver = false;
+    hasWon = false;  // Reset win condition
 }
 
 void Game::step(int action) {
@@ -138,4 +141,32 @@ void Game::step(int action) {
 void Game::captureFrame() {
     sf::Texture frame = texture.getTexture();
     lastFrame = frame.copyToImage();
+}
+
+void Game::processGroundCollision() {
+    b2ContactEvents contactEvents = b2World_GetContactEvents(world->getWorldId());
+
+    for (int i = 0; i < contactEvents.beginCount; ++i) {
+        b2ContactBeginTouchEvent* beginEvent = contactEvents.beginEvents + i;
+        
+        b2BodyId bodyA = b2Shape_GetBody(beginEvent->shapeIdA);
+        b2BodyId bodyB = b2Shape_GetBody(beginEvent->shapeIdB);
+
+        if (b2Body_IsValid(bodyA) && b2Body_IsValid(bodyB)) {
+            void* userDataA = b2Body_GetUserData(bodyA);
+            void* userDataB = b2Body_GetUserData(bodyB);
+            bool isSquareGroundCollision = 
+                (userDataA == square.get() && userDataB == ground.get()) ||
+                (userDataB == square.get() && userDataA == ground.get());
+
+            if (isSquareGroundCollision) {
+                std::cout << "Square-Ground collision detected!" << std::endl;
+                if (square->getHealth() > 0) {
+                    hasWon = true;
+                    gameOver = true;
+                    std::cout << "Level Complete! Health remaining: " << square->getHealth() << std::endl;
+                }
+            }
+        }
+    }
 }

@@ -9,6 +9,7 @@ Ground::Ground(const World &world, const GroundConfig& config) : config(config) 
 
   groundBodyDef.position = config.position;
   groundBodyDef.type = b2_staticBody;
+  groundBodyDef.userData = this;  // Adăugăm asta pentru a putea identifica ground-ul în coliziuni
 
   this->id = b2CreateBody(world.getWorldId(), &groundBodyDef);
   createShape();

@@ -43,9 +43,11 @@ private:
     bool gameOver = false;
     bool instantiate;
     sf::Image lastFrame;
+    bool hasWon = false;
 
     void update();  // Updates game state
     void render();  // Renders frame
+    void processGroundCollision();  // New method
 
 public:
     Game(bool instantiate = true);     // Initializes game systems
@@ -56,4 +58,5 @@ public:
     bool isGameOver() const { return gameOver; }
     const sf::Image& getLastFrame() const { return lastFrame; }
     void captureFrame();
+    bool isWin() const { return hasWon; }
 };
