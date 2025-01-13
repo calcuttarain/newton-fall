@@ -36,12 +36,16 @@ PYBIND11_MODULE(bindmodule, m) {
         .def("step", &Game::step)
         .def("restart", &Game::restart)
         .def("isGameOver", &Game::isGameOver)
-        .def("getLastFrame", [](Game& game) {    // Changed from Game
+        .def("isWin", &Game::isWin)
+        .def("getLastFrame", [](Game& game) {   
             return imageToNumpy(game.getLastFrame());
         });
+
 
     py::class_<LoadLevels>(m, "LoadLevels")
         .def_static("loadAllLevels", &LoadLevels::loadAllLevels);
 
     py::class_<GameConfig>(m, "GameConfig");
+
+
 }
