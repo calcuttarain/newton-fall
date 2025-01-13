@@ -9,16 +9,21 @@ Usage:
 4) game.loadConfig(levels[0])
 5) game.step(action=0|1|2), game.isGameOver(), game.isWin()
 6) Inspect frames: frame = game.getLastFrame()
+7) Check health: health = game.getHealth()  # returns current health (0-200)
 
 Minimal Random Loop:
 --------------------
 while not game.isGameOver():
     game.step(random.choice([0,1,2]))
+    print(f"Health: {game.getHealth()}")  # monitor health during gameplay
 
 Advanced:
 ---------
 - run() for interactive window
 - restart() to reload current level
+- Check win condition with health:
+    if game.isWin():
+        print(f"Won with {game.getHealth()} health remaining!")
 """
 
 import sys
@@ -124,6 +129,33 @@ def play_sinusoidal_movement(game):
             
     return game.isWin()
 
+def test_health_after_gameplay(game, duration=3.0):
+    """
+    Test function that plays randomly for 3 seconds then checks health.
+    Shows health monitoring during gameplay.
+    """
+    start_time = time.time()
+    initial_health = game.getHealth()
+    print(f"Starting health: {initial_health}")
+    
+    while not game.isGameOver() and (time.time() - start_time) < duration:
+        action = random.choice([0, 1, 2])
+        game.step(action)
+        
+        frame = game.getLastFrame()
+        frame = np.array(frame)
+        cv2.imshow('Game', cv2.cvtColor(frame, cv2.COLOR_RGBA2BGR))
+        
+        if cv2.waitKey(16) & 0xFF == ord('q'):
+            break
+    
+    final_health = game.getHealth()
+    damage_taken = initial_health - final_health
+    print(f"\nAfter {duration} seconds:")
+    print(f"Final health: {final_health}")
+    print(f"Damage taken: {damage_taken}")
+    print(f"Survival rate: {(final_health/initial_health)*100:.1f}%")
+
 def main():
     try:
         levels = bindmodule.LoadLevels.loadAllLevels("game/levels")
@@ -133,25 +165,10 @@ def main():
 
         game = bindmodule.Game()
         selected_level = 0
-        attempts = 0
         
-        while True:
-            attempts += 1
-            print(f"\nAttempt {attempts} on level {selected_level}")
-            
-            game.loadConfig(levels[selected_level])
-            success = play_sinusoidal_movement(game)
-            
-            if success:
-                print(f"Level {selected_level} completed after {attempts} attempts!")
-                break
-            else:
-                print("Failed attempt, restarting...")
-                game.restart()
-                time.sleep(0.5) 
-            
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+        print(f"\nTesting health monitoring on level {selected_level}")
+        game.loadConfig(levels[selected_level])
+        test_health_after_gameplay(game)
                 
         cv2.destroyAllWindows()
 

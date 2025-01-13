@@ -170,3 +170,7 @@ void Game::processGroundCollision() {
         }
     }
 }
+
+float Game::getHealth() const {
+    return square ? square->getHealth() : 0.0f;
+}

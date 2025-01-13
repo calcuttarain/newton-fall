@@ -59,4 +59,5 @@ public:
     const sf::Image& getLastFrame() const { return lastFrame; }
     void captureFrame();
     bool isWin() const { return hasWon; }
+    float getHealth() const;
 };
