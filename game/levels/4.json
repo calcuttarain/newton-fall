@@ -1,0 +1,39 @@
+{
+    "display": {
+        "backgroundSize": [2000.0, 50000.0],
+        "windowSize": [1920.0, 1080.0],
+        "viewSize": [120.0, 80.0],
+        "fps": 165.0
+    },
+    "world": {
+        "gravity": [0.0, -22.0]
+    },
+    "ground": {
+        "position": [0.0, -15.0],
+        "size": [120.0, 80.0]
+    },
+    "square": {
+        "position": [0.0, 4900.0],
+        "size": [2.8, 2.8],
+        "density": 1.8,
+        "friction": 0.04,
+        "bounciness": 0.3,
+        "damageThreshold": 22.0,
+        "maxHealth": 120.0,
+        "invincibilityTime": 0.6,
+        "max_velocity": 25.0,     
+        "acceleration": 1.1,       
+        "deceleration": 0.5
+    },
+    "wall": {
+        "height": 5000.0,
+        "spacing": 32.0,
+        "leftWallSeed": 3333,
+        "rightWallSeed": 4444,
+        "nodesCount": 120,
+        "samplesCount": 40000,
+        "octavesCount": 7,
+        "amplitude": 4.8,
+        "persistance": 0.48
+    }
+}
