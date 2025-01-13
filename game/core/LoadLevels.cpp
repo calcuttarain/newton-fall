@@ -95,9 +95,6 @@ void LoadLevels::parseSquareConfig(const nlohmann::json& j, SquareConfig& config
     if (j.contains("damageThreshold")) config.damageThreshold = j["damageThreshold"];
     if (j.contains("maxHealth")) config.maxHealth = j["maxHealth"];
     if (j.contains("invincibilityTime")) config.invincibilityTime = j["invincibilityTime"];
-    if (j.contains("max_velocity")) config.max_velocity = j["max_velocity"];
-    if (j.contains("acceleration")) config.acceleration = j["acceleration"];
-    if (j.contains("deceleration")) config.deceleration = j["deceleration"];
 }
 
 void LoadLevels::parseWallConfig(const nlohmann::json& j, WallConfig& config) {
@@ -110,6 +107,14 @@ void LoadLevels::parseWallConfig(const nlohmann::json& j, WallConfig& config) {
     if (j.contains("octavesCount")) config.octavesCount = j["octavesCount"];
     if (j.contains("amplitude")) config.amplitude = j["amplitude"];
     if (j.contains("persistance")) config.persistance = j["persistance"];
+
+    // Adăugăm parsarea parametrilor pentru path
+    if (j.contains("pathSeed")) config.pathSeed = j["pathSeed"];
+    if (j.contains("pathNodesCount")) config.pathNodesCount = j["pathNodesCount"];
+    if (j.contains("pathSamplesCount")) config.pathSamplesCount = j["pathSamplesCount"];
+    if (j.contains("pathOctavesCount")) config.pathOctavesCount = j["pathOctavesCount"];
+    if (j.contains("pathAmplitude")) config.pathAmplitude = j["pathAmplitude"];
+    if (j.contains("pathPersistance")) config.pathPersistance = j["pathPersistance"];
 }
 
 void LoadLevels::parseGameConfig(const nlohmann::json& j, GameConfig& config) {

@@ -29,8 +29,6 @@ private:
     //logica generarii zgomotului intr-un singur sample
     float computeSampleNoise(float leftNode, float rightNode, int leftGradient, int rightGradient, float sample);
 
-    void normalizeFirstOctaveNoise(float minValue, float maxValue);
-
 public:
     //primeste parametrii care raman fixati. 
     PerlinNoise(b2Vec2 domain, unsigned int nodeCount, unsigned int sampleCount, unsigned int octavesCount, float amplitude, float persistance) : domain(domain), nodeCount(nodeCount), sampleCount(sampleCount), octavesCount(octavesCount), amplitude(amplitude), persistance(persistance)  {}

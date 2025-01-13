@@ -5,7 +5,6 @@
 #include "RenderableBody.h"
 #include "World.h"
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <box2d/box2d.h>
 #include <box2d/id.h>
@@ -26,9 +25,11 @@ private:
     sf::VertexArray rightWallVisual;
 
     PerlinNoise perlinNoise;
+    PerlinNoise pathNoise;
 
     std::vector<b2Vec2> leftWallpoints;
     std::vector<b2Vec2> rightWallpoints;
+    std::vector<b2Vec2> pathPoints;
 
     const WallConfig& config;
 
@@ -37,11 +38,14 @@ private:
     void createGraphicsObject(const std::vector<b2Vec2>& points, sf::VertexArray& wallVisual, bool isLeftWall);
 
     void generatePerlinNoise();
+    void generatePath();
 
     void processPoints();
+    void applyPathToWalls();
 
 public:
     Wall(const World &world, const WallConfig& config);
 
-    void render(sf::RenderTarget &target); 
+    void render(sf::RenderTarget &target); // Single render method for both window types
+
 };

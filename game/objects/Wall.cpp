@@ -3,18 +3,23 @@
 #include "PerlinNoise.h"
 #include "RenderableBody.h"
 #include "World.h"
-#include <SFML/Graphics/RenderTarget.hpp>
 #include <box2d/math_functions.h>
 
-Wall::Wall(const World &world, const WallConfig& config) : config(config), perlinNoise((b2Vec2) {config.height, 0.f}, config.nodesCount, config.samplesCount, config.octavesCount, config.amplitude, config.persistance) {
-    //box2d wall definition
+Wall::Wall(const World &world, const WallConfig& config) 
+    : config(config), 
+      perlinNoise((b2Vec2) {config.height, 0.f}, config.nodesCount, config.samplesCount, config.octavesCount, config.amplitude, config.persistance),
+      pathNoise((b2Vec2) {config.height, 0.f}, config.pathNodesCount, config.pathSamplesCount, config.pathOctavesCount, config.pathAmplitude, config.pathPersistance) {
+    
     b2BodyDef wallDef = b2DefaultBodyDef();
     wallDef.type = b2_staticBody;
 
-    this->leftWallId = b2CreateBody(world.getWorldId(), &wallDef);
-    this->rightWallId = b2CreateBody(world.getWorldId(), &wallDef);
+    leftWallId = b2CreateBody(world.getWorldId(), &wallDef);
+    rightWallId = b2CreateBody(world.getWorldId(), &wallDef);
 
-    //perlinNoise generator
+    // Generate path first
+    pathPoints = pathNoise.generate(config.pathSeed);
+
+    // Then generate walls
     leftWallpoints = perlinNoise.generate(config.leftWallSeed);
     rightWallpoints = perlinNoise.generate(config.rightWallSeed);
 
@@ -25,18 +30,27 @@ Wall::Wall(const World &world, const WallConfig& config) : config(config), perli
 
     createGraphicsObject(leftWallpoints, leftWallVisual, true);
     createGraphicsObject(rightWallpoints, rightWallVisual, false);
-
 }
 
 void Wall::processPoints() {
-    //punctele din stanga
-    for(int i = 0; i < leftWallpoints.size(); i++)
-        leftWallpoints[i].x -= config.spacing / 2;
+    // Aplicăm mai întâi noise-ul pentru fiecare zid individual
+    float wallNoiseAmplitude = config.amplitude;
 
-    //punctele din dreapta
+    // Păstrăm noise-ul original pentru ziduri
+    std::vector<b2Vec2> leftWallNoise = leftWallpoints;
+    std::vector<b2Vec2> rightWallNoise = rightWallpoints;
+
+    // Aplicăm path-ul și spacing-ul
+    for (size_t i = 0; i < leftWallpoints.size(); i++) {
+        float pathOffset = pathPoints[i].x;
+        
+        // Aplicăm noise-ul zidurilor și centrăm pe path
+        leftWallpoints[i].x = pathOffset - config.spacing / 2 + leftWallNoise[i].x;
+        rightWallpoints[i].x = pathOffset + config.spacing / 2 + rightWallNoise[i].x;
+    }
+
+    // Inversăm punctele zidului din dreapta pentru a menține orientarea corectă
     std::reverse(rightWallpoints.begin(), rightWallpoints.end());
-    for(int i = 0; i < rightWallpoints.size(); i++)
-        rightWallpoints[i].x += config.spacing / 2;
 }
 
 void Wall::createShape(const b2BodyId& wallId, const std::vector<b2Vec2>& points)

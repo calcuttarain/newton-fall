@@ -41,25 +41,18 @@ import random
 
 
 
-def play_game(game, duration=4.0):
+def play_game(game, duration=100.0):
     start_time = time.time()
     while not game.isGameOver() and (time.time() - start_time) < duration:
         # Simulăm un comportament natural de control
-        action = random.choice([0, 1, 2])  # 0=nothing, 1=left, 2=right
+        action = 0  # 0=nothing, 1=left, 2=right
         game.step(action)
         
-        # Afișăm frame-ul curent
-        frame = game.getLastFrame()
-        frame = np.array(frame)
-        cv2.imshow('Game', cv2.cvtColor(frame, cv2.COLOR_RGBA2BGR))
-        
-        # Afișăm starea jocului
+    
         if game.isWin():
             print("Level Won!")
-        
-        # Controlăm frame rate-ul
-        if cv2.waitKey(16) & 0xFF == ord('q'):  # ~60 FPS
-            break
+        if game.isGameOver():
+            print("Game")
 
 def play_game_with_strategy(game):
     # Prima fază: 5 secunde doar dreapta

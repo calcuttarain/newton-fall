@@ -160,12 +160,9 @@ void Game::processGroundCollision() {
                 (userDataB == square.get() && userDataA == ground.get());
 
             if (isSquareGroundCollision) {
-                std::cout << "Square-Ground collision detected!" << std::endl;
-                if (square->getHealth() > 0) {
-                    hasWon = true;
-                    gameOver = true;
-                    std::cout << "Level Complete! Health remaining: " << square->getHealth() << std::endl;
-                }
+                hasWon = true;
+                gameOver = true;
+                std::cout << "Level Complete! Health remaining: " << square->getHealth() << std::endl;
             }
         }
     }
