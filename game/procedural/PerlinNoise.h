@@ -6,6 +6,7 @@
 #include <cmath>
 #include <random>
 #include <iostream>
+#include <algorithm>
 
 class PerlinNoise {
 private:
