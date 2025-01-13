@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
 #include <iostream>
 
 class Background {
@@ -12,6 +11,6 @@ private:
 public:
   Background(sf::Vector2f size);
 
-  void render(sf::RenderTarget& target, float u_time);
+  void render(sf::RenderWindow& window, float u_time);
 };
 

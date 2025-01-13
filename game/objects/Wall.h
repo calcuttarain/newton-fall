@@ -5,8 +5,6 @@
 #include "RenderableBody.h"
 #include "World.h"
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/RenderTexture.hpp>
 #include <box2d/box2d.h>
 #include <box2d/id.h>
 #include <box2d/math_functions.h>
@@ -24,6 +22,7 @@ private:
 
     sf::VertexArray leftWallVisual;
     sf::VertexArray rightWallVisual;
+
 
     PerlinNoise perlinNoise;
 
@@ -43,5 +42,5 @@ private:
 public:
     Wall(const World &world, const WallConfig& config);
 
-    void render(sf::RenderTarget &target); 
+    void render(sf::RenderWindow &window); 
 };
