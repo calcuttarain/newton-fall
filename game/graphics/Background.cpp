@@ -1,6 +1,4 @@
 #include "Background.h"
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/RenderTexture.hpp>
 
 Background::Background(sf::Vector2f size) {
   this->visual.setSize(size);
@@ -14,8 +12,7 @@ Background::Background(sf::Vector2f size) {
   }
 }
 
-void Background::render(sf::RenderTarget &target, float u_time) {
+void Background::render(sf::RenderWindow &window, float u_time) {
   this->shader.setUniform("u_time", u_time);
-  target.draw(this->visual, &this->shader);
+  window.draw(this->visual, &this->shader);
 }
-
