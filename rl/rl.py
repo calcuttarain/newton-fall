@@ -122,7 +122,7 @@ def take_step(Game, agent, score, debug=False, training=True):
     health = Game.getHealth()
     reward = -1 + (health - prev_health)
     if Game.isWin():
-        reward = reward + 1000
+        reward = reward + 5000
     done = Game.isGameOver()
 
     # Preprocess next frame and construct new state
@@ -177,7 +177,7 @@ class Agent():
         self.memory = Memory(max_mem_len)
         self.possible_actions = possible_actions
         self.epsilon = starting_epsilon
-        self.epsilon_decay = .9/10000 #initially .9/100000
+        self.epsilon_decay = .9/100000 #initially .9/100000
         self.epsilon_min = .05
         self.gamma = .95
         self.learn_rate = learn_rate
@@ -292,7 +292,7 @@ def train_agent(agent, selected_level, experiment_name):
         timesteps = agent.total_timesteps
         timee = time.time()
         level = levels[selected_level]
-        score = play_episode(Game, agent, level, duration=60.0, debug = False, training=True) #set debug to true for rendering
+        score = play_episode(Game, agent, level, duration=75.0, debug = False, training=True) #set debug to true for rendering
         scores.append(score)
         if score > max_score:
             max_score = score
@@ -306,13 +306,16 @@ def train_agent(agent, selected_level, experiment_name):
         print()
         print()
 
-    if i%100==0 and i!=0:
-        last_100_avg.append(sum(scores)/len(scores))
-        plt.plot(np.arange(0,i+1,100),last_100_avg)
-        plt.show()
-
-    torch.save(agent.model.state_dict(), f'exp_{experiment_name}.pth')
-    torch.save(agent.model_target.state_dict(), f'exp_{experiment_name}_target.pth')
+        if i%100==0 and i!=0:
+            torch.save(agent.model.state_dict(), f'exp_{experiment_name}.pth')
+            torch.save(agent.model_target.state_dict(), f'exp_{experiment_name}_target.pth')
+            try:
+                last_100_avg.append(sum(scores)/len(scores))
+                plt.plot(np.arange(0,i+1,100),last_100_avg)
+                plt.show()
+            except:
+                print("Error plotting info")
+    
     
 
 
@@ -322,4 +325,4 @@ def test_agent(agent, selected_level, experiment_name):
 
 
 agent = Agent(possible_actions=[0,1,2],starting_mem_len=1000,max_mem_len=750000,starting_epsilon=1,learn_rate=.0005)
-train_agent(agent, selected_level=0, experiment_name="hope_newlvl")
+train_agent(agent, selected_level=0, experiment_name="pls_work_newlvl_h660_fps40")
