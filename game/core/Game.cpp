@@ -69,13 +69,18 @@ void Game::run() {
 
 void Game::render() {
   float u_time = this->clock.getElapsedTime().asSeconds();
+
   sf::Vector2f squarePosition = square.getPosition();
+  squarePosition.x += 600.0f; // Ajustează valoarea până când lumina se aliniază perfect
+  squarePosition.y += 10.0f;
+
   std::cout << "Square Position: " << squarePosition.x << ", " << squarePosition.y << std::endl;
+
 
 
    // Setează uniformele pentru shader-ul fundalului
   background.setLightPosition(squarePosition); // Poziția pătratului
-  background.setLightRadius(400.0f);           // Ajustează raza luminii (ex. 200 pixeli)
+  background.setLightRadius(200.0f);           // Ajustează raza luminii (ex. 200 pixeli)
   background.setLightColor(sf::Vector3f(1.0f, 1.0f, 1.0f)); // Lumină albă
 
   window.clear();
