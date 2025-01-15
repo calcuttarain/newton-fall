@@ -171,3 +171,7 @@ void Game::processGroundCollision() {
 float Game::getHealth() const {
     return square ? square->getHealth() : 0.0f;
 }
+
+float Game::getPositionY() const{
+    return square ? square->getPosition().y : 0.0f;
+}

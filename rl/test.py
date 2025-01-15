@@ -122,7 +122,7 @@ def play_sinusoidal_movement(game):
             
     return game.isWin()
 
-def test_health_after_gameplay(game, duration=3.0):
+def test_health_after_gameplay(game, duration=10.0):
     """
     Test function that plays randomly for 3 seconds then checks health.
     Shows health monitoring during gameplay.

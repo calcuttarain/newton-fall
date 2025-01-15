@@ -38,6 +38,7 @@ PYBIND11_MODULE(bindmodule, m) {
         .def("isGameOver", &Game::isGameOver)
         .def("isWin", &Game::isWin)
         .def("getHealth", &Game::getHealth)
+        .def("getPositionY", &Game::getPositionY)
         .def("getLastFrame", [](Game& game) {   
             return imageToNumpy(game.getLastFrame());
         });

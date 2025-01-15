@@ -100,7 +100,6 @@ def make_Game():
     """
     Create and return the environment.
     """
-    # Create game in non-headless mode for visualization
     game = bindmodule.Game()
     return game
 
@@ -111,7 +110,7 @@ def take_step(Game, agent, score, debug=False, training=True):
     Perform a single step in the game, update the agent's memory, and train if necessary.
     """
     agent.total_timesteps += 1
-    if agent.total_timesteps % 50000 == 0:
+    if training and agent.total_timesteps % 50000 == 0:
         torch.save(agent.model.state_dict(), 'recent_weights.pth')
         print('\nWeights saved temporarily!')
 
@@ -120,21 +119,22 @@ def take_step(Game, agent, score, debug=False, training=True):
     Game.step(agent.memory.actions[-1])
     next_frame = np.array(Game.getLastFrame())
     health = Game.getHealth()
-    reward = -1 + (health - prev_health)
+    positionY = int(Game.getPositionY()/100)
+    reward = (health - prev_health) - ((2**positionY) / 16)
     if Game.isWin():
         reward = reward + 5000
     done = Game.isGameOver()
 
     # Preprocess next frame and construct new state
+    unresized_frame = next_frame
     next_frame = resize_frame(next_frame)
     new_state = np.array([agent.memory.frames[-3], agent.memory.frames[-2],
                           agent.memory.frames[-1], next_frame], dtype=np.float32)
     new_state = new_state / 255.0  # Normalize pixel values
-    new_state = torch.tensor(new_state).to(agent.device)  # PyTorch format
+    new_state = torch.tensor(new_state).to(agent.device) 
     # Select next action
     next_action = agent.get_action(new_state)
 
-    # Add experience to memory
     agent.memory.add_experience(next_frame, reward, next_action, done)
 
     # If the game is over, return the final score
@@ -144,7 +144,7 @@ def take_step(Game, agent, score, debug=False, training=True):
 
     # Render the game if debugging
     if debug:
-        cv2.imshow('Game', cv2.cvtColor(next_frame, cv2.COLOR_RGBA2BGR))
+        cv2.imshow('Game', cv2.cvtColor(unresized_frame, cv2.COLOR_RGBA2BGR))
         cv2.waitKey(1)
 
     # Train the agent if memory has enough experiences
@@ -205,7 +205,7 @@ class Agent():
             nn.Conv2d(64, 64, kernel_size=3, stride=1),
             nn.ReLU(),
             nn.Flatten(),
-            nn.Linear(64 * 7 * 7, 512),  # Adjust based on input image size
+            nn.Linear(64 * 7 * 7, 512), 
             nn.ReLU(),
             nn.Linear(512, len(self.possible_actions))  # Output: Q-values for each action
         )
@@ -231,7 +231,7 @@ class Agent():
 
         """First we need 32 random valid indicies"""
         if len(self.memory.frames) < 40:
-                return  # Not enough memory to sample a batch
+                return 
 
         # Sample a random batch of experiences
         states, actions, rewards, next_states, dones = self.memory.sample(32)
@@ -255,10 +255,10 @@ class Agent():
         target_q_values = rewards + (1 - dones) * self.gamma * next_q_values
 
         """Train the model"""
-        loss = self.loss_fn(q_values, target_q_values)  # Compute loss
+        loss = self.loss_fn(q_values, target_q_values) 
         self.optimizer.zero_grad()  # Clear gradients
-        loss.backward()  # Backpropagation
-        self.optimizer.step()  # Update model parameters
+        loss.backward() 
+        self.optimizer.step()
         
         """Decrease epsilon and update how many times our agent has learned"""
         if self.epsilon > self.epsilon_min:
@@ -287,7 +287,7 @@ def train_agent(agent, selected_level, experiment_name):
     scores = deque(maxlen = 100)
     max_score = -100000
 
-    for i in range(102):
+    for i in range(301):
         # frames = [] # Saving the frames for the gif
         timesteps = agent.total_timesteps
         timee = time.time()
@@ -307,22 +307,86 @@ def train_agent(agent, selected_level, experiment_name):
         print()
 
         if i%100==0 and i!=0:
+            last_100_avg.append(sum(scores)/len(scores))
             torch.save(agent.model.state_dict(), f'exp_{experiment_name}.pth')
             torch.save(agent.model_target.state_dict(), f'exp_{experiment_name}_target.pth')
-            try:
-                last_100_avg.append(sum(scores)/len(scores))
-                plt.plot(np.arange(0,i+1,100),last_100_avg)
-                plt.show()
-            except:
-                print("Error plotting info")
+    
+    try:
+        plt.plot(np.arange(0,i+1,100),last_100_avg)
+        plt.show()
+    except:
+        print("Error plotting info")
     
     
 
 
 def test_agent(agent, selected_level, experiment_name):
-    return
+    levels = bindmodule.LoadLevels.loadAllLevels("game/levels")
+    if not levels:
+        print("No levels found!")
+        return
+    # selected_level = 4
+    agent.model.load_state_dict(torch.load(f"exp_{experiment_name}.pth", weights_only=True))
+    agent.model_target.load_state_dict(torch.load(f"exp_{experiment_name}_target.pth", weights_only=True))
+    agent.model.eval()
+    agent.model_target.eval()
+    Game = make_Game()
+    level = levels[selected_level]
+    
+    timesteps = agent.total_timesteps
+    timee = time.time()
+    score = play_episode(Game, agent, level, duration=75.0, debug = True, training=False) #set debug to true for rendering
+    print('Steps: ' + str(agent.total_timesteps - timesteps))
+    print('Duration: ' + str(time.time() - timee))
+    print('Score: ' + str(score))
         
+
+def continue_train_agent(agent, selected_level, experiment_name, train_round=2):
+    levels = bindmodule.LoadLevels.loadAllLevels("game/levels")
+    if not levels:
+        print("No levels found!")
+        return
+    # selected_level = 4
+    agent.model.load_state_dict(torch.load(f"exp_{experiment_name}.pth", weights_only=True))
+    agent.model_target.load_state_dict(torch.load(f"exp_{experiment_name}_target.pth", weights_only=True))
+    Game = make_Game()
+    last_100_avg = [-700]
+    scores = deque(maxlen = 100)
+    max_score = -100000
+
+    for i in range(301):
+        # frames = [] # Saving the frames for the gif
+        timesteps = agent.total_timesteps
+        timee = time.time()
+        level = levels[selected_level]
+        score = play_episode(Game, agent, level, duration=75.0, debug = False, training=True) #set debug to true for rendering
+        scores.append(score)
+        if score > max_score:
+            max_score = score
+
+        print('Episode: ' + str(i))
+        print('Steps: ' + str(agent.total_timesteps - timesteps))
+        print('Duration: ' + str(time.time() - timee))
+        print('Score: ' + str(score))
+        print('Max Score: ' + str(max_score))
+        print('Epsilon: ' + str(agent.epsilon))
+        print()
+        print()
+
+        if i%100==0 and i!=0:
+            last_100_avg.append(sum(scores)/len(scores))
+            torch.save(agent.model.state_dict(), f'exp_{experiment_name}_v{train_round}.pth')
+            torch.save(agent.model_target.state_dict(), f'exp_{experiment_name}_v{train_round}_target.pth')
+    
+    try:
+        plt.plot(np.arange(0,i+1,100),last_100_avg)
+        plt.show()
+    except:
+        print("Error plotting info")
+    
 
 
 agent = Agent(possible_actions=[0,1,2],starting_mem_len=1000,max_mem_len=750000,starting_epsilon=1,learn_rate=.0005)
-train_agent(agent, selected_level=0, experiment_name="pls_work_newlvl_h660_fps40")
+agent_test = Agent(possible_actions=[0,1,2],starting_mem_len=1000,max_mem_len=750000,starting_epsilon=0.05,learn_rate=.0005)
+# train_agent(agent, selected_level=0, experiment_name="getPosY_h660_fps40")
+test_agent(agent_test, selected_level=0, experiment_name="getPosY_h660_fps40")
