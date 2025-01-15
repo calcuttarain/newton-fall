@@ -52,4 +52,5 @@ public:
     float getHealth() const { return health; }
     void update(float deltaTime);
     void render(sf::RenderWindow &window) override;
+
 };

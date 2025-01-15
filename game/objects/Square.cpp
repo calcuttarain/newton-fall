@@ -190,3 +190,6 @@ void Square::render(sf::RenderWindow &window) {
         window.draw(visual);
     }
 }
+
+
+

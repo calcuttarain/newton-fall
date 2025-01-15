@@ -16,3 +16,15 @@ void Background::render(sf::RenderWindow &window, float u_time) {
   this->shader.setUniform("u_time", u_time);
   window.draw(this->visual, &this->shader);
 }
+
+void Background::setLightPosition(sf::Vector2f position) {
+  this->shader.setUniform("lightPosition", position);
+}
+
+void Background::setLightRadius(float radius) {
+  this->shader.setUniform("lightRadius", radius);
+}
+
+void Background::setLightColor(sf::Vector3f color) {
+  this->shader.setUniform("lightColor", color);
+}
