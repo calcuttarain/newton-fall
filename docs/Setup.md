@@ -26,10 +26,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### Step 3: Install Conan
-Install Conan to manage project dependencies:
+### Step 3: Install dependencies
+Install project dependencies:
 ```bash
-pip3 install conan
+pip3 install -r requirements.txt
 ```
 
 ### Step 4: Create Conan Profile and Install Dependencies
@@ -52,4 +52,3 @@ Execute the project binary:
 ```bash
 ./build/Release/bin/newtons_fall
 ```
-

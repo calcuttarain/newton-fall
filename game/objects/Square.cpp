@@ -3,6 +3,7 @@
 #include "box2d/id.h"
 #include "box2d/math_functions.h"
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
@@ -169,6 +170,29 @@ void Square::processContactEvents(b2WorldId worldId) {
             }
         }
     }
+}
+
+void Square::handleMovement(bool isLeftPressed, bool isRightPressed) {
+    b2Vec2 velocity = b2Body_GetLinearVelocity(this->id);
+
+    if (isLeftPressed) {
+        velocity.x -= config.acceleration;
+        if (velocity.x < -config.max_velocity) velocity.x = -config.max_velocity; 
+    }
+    else if (isRightPressed) {
+        velocity.x += config.acceleration;
+        if (velocity.x > config.max_velocity) velocity.x = config.max_velocity;
+    } else {
+        if (velocity.x > 0) {
+            velocity.x -= config.deceleration;
+            if (velocity.x < 0) velocity.x = 0; 
+        } else if (velocity.x < 0) {
+            velocity.x += config.deceleration;
+            if (velocity.x > 0) velocity.x = 0;
+        }
+    }
+
+    b2Body_SetLinearVelocity(this->id, (b2Vec2){velocity.x, velocity.y});
 }
 
 /**

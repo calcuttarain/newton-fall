@@ -3,6 +3,7 @@
 #include "PerlinNoise.h"
 #include "RenderableBody.h"
 #include "World.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <box2d/math_functions.h>
 
 Wall::Wall(const World &world, const WallConfig& config) : config(config), perlinNoise((b2Vec2) {config.height, 0.f}, config.nodesCount, config.samplesCount, config.octavesCount, config.amplitude, config.persistance) {

@@ -1,4 +1,6 @@
 #include "Background.h"
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 
 Background::Background(sf::Vector2f size) {
   this->visual.setSize(size);

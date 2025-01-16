@@ -1,6 +1,7 @@
 #include "RenderableBody.h"
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <box2d/id.h>
@@ -9,8 +10,8 @@
 #include <cstddef>
 #include <iostream>
 
-void RenderableBody::render(sf::RenderWindow &window) {
-  window.draw(this->visual);
+void RenderableBody::render(sf::RenderTarget &target) {
+  target.draw(this->visual);
 }
 
 b2BodyId RenderableBody::getId() const { return this->id; }
