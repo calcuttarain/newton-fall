@@ -81,6 +81,7 @@ void Game::update() {
     
     // Verificăm dacă jocul s-a terminat 
     if (square->getHealth() <= 0) {
+        backgroundMusic.stop(); // Oprește muzica dacă jocul s-a terminat
         gameOver = true;
         std::cout << "Game Over!" << std::endl;
     }
@@ -104,7 +105,26 @@ void Game::loadConfig(const GameConfig& newConfig) {
     wall = std::make_unique<Wall>(*world, config.wallConfig);
     background = std::make_unique<Background>(config.displayConfig.backgroundSize);
     camera = std::make_unique<Camera>(config.displayConfig.viewSize);
+
+    if (!backgroundMusic.openFromFile("game/assets/music/background.ogg")) {
+    std::cerr << "Failed to load background music!" << std::endl;
+    } else {
+    backgroundMusic.setVolume(50.0f); // Setează volumul la 50%
+    backgroundMusic.setLoop(true);   // Activează redarea în buclă
+    backgroundMusic.play();          // Pornește muzica
+    }
+
+    if (!collisionBuffer.loadFromFile("game/assets/music/collision.wav")) {
+    std::cerr << "Failed to load collision sound!" << std::endl;
 }
+    else{
+    collisionSound.setBuffer(collisionBuffer);
+    collisionSound.setVolume(50.0f); // Setează volumul (0-100%)
+    }
+
+}
+
+
 
 void Game::restart() {
     loadConfig(config);
@@ -157,20 +177,31 @@ void Game::processGroundCollision() {
 
     for (int i = 0; i < contactEvents.beginCount; ++i) {
         b2ContactBeginTouchEvent* beginEvent = contactEvents.beginEvents + i;
-        
+
         b2BodyId bodyA = b2Shape_GetBody(beginEvent->shapeIdA);
         b2BodyId bodyB = b2Shape_GetBody(beginEvent->shapeIdB);
 
         if (b2Body_IsValid(bodyA) && b2Body_IsValid(bodyB)) {
             void* userDataA = b2Body_GetUserData(bodyA);
             void* userDataB = b2Body_GetUserData(bodyB);
-            bool isSquareGroundCollision = 
+
+            // Coliziune între pătrat și sol
+            bool isSquareGroundCollision =
                 (userDataA == square.get() && userDataB == ground.get()) ||
                 (userDataB == square.get() && userDataA == ground.get());
 
-            if (isSquareGroundCollision) {
-                std::cout << "Square-Ground collision detected!" << std::endl;
-                if (square->getHealth() > 0) {
+            // Coliziune între pătrat și perete
+            bool isSquareWallCollision =
+                (userDataA == square.get() && userDataB == wall.get()) ||
+                (userDataB == square.get() && userDataA == wall.get());
+
+            if (isSquareGroundCollision || isSquareWallCollision) {
+                std::cout << "Collision detected!" << std::endl;
+
+                // Redă sunetul coliziunii
+                collisionSound.play();
+
+                if (isSquareGroundCollision && square->getHealth() > 0) {
                     hasWon = true;
                     gameOver = true;
                     std::cout << "Level Complete! Health remaining: " << square->getHealth() << std::endl;
@@ -179,6 +210,7 @@ void Game::processGroundCollision() {
         }
     }
 }
+
 
 float Game::getHealth() const {
     return square ? square->getHealth() : 0.0f;

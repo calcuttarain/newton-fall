@@ -9,6 +9,7 @@ find_package(box2d REQUIRED)
 find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 find_package(pybind11 REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(SFML 2.6 COMPONENTS graphics window system audio REQUIRED)
 
 # project
 include_directories(
@@ -32,6 +33,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     sfml-graphics 
     sfml-window 
     sfml-system 
+    sfml-audio 
     nlohmann_json::nlohmann_json
 )
 
@@ -53,5 +55,6 @@ target_link_libraries(bindmodule PRIVATE
     sfml-graphics
     sfml-window
     sfml-system
+    sfml-audio 
     nlohmann_json::nlohmann_json
 )

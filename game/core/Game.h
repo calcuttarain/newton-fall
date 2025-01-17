@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 #include <memory>
 
@@ -32,6 +33,10 @@ private:
     sf::RenderWindow window;  // Main render window
     sf::RenderTexture texture;
     sf::Clock clock;         // Game time tracking
+    sf::Music backgroundMusic;
+    sf::SoundBuffer collisionBuffer; // Buffer pentru sunetul de coliziune
+    sf::Sound collisionSound;        // Obiect pentru redarea sunetului
+
     std::unique_ptr<World> world;             // Physics world
     std::unique_ptr<Camera> camera;           // View control
 
