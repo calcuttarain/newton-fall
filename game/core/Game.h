@@ -60,4 +60,5 @@ public:
     void captureFrame();
     bool isWin() const { return hasWon; }
     float getHealth() const;
+    float getPositionY() const;
 };

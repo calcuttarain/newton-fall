@@ -3,4 +3,4 @@ matplotlib
 opencv-python
 conan
 
-
+#torch

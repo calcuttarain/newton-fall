@@ -7,11 +7,13 @@ std::vector<GameConfig> LoadLevels::loadAllLevels(const std::string& levelsPath)
     std::vector<GameConfig> levels;
     
     try {
+        // Colectăm toate fișierele .json și le indexăm
         for (const auto& entry : std::filesystem::directory_iterator(levelsPath)) {
             if (entry.path().extension() == ".json") {
                 std::string filename = entry.path().stem().string();
                 try {
                     int index = std::stoi(filename);
+                    std::cout << "Found level file: " << filename << ".json" << " with index " << index << std::endl;
                     levelFiles.push_back({index, entry.path().string()});
                 } catch (const std::exception& e) {
                     std::cerr << "Skipping " << filename << ": not a number" << std::endl;
@@ -19,13 +21,19 @@ std::vector<GameConfig> LoadLevels::loadAllLevels(const std::string& levelsPath)
             }
         }
 
-        // Sortăm după index pentru a menține ordinea corectă
-        std::sort(levelFiles.begin(), levelFiles.end());
+        // Sortăm explicit folosind indexul numeric
+        std::sort(levelFiles.begin(), levelFiles.end(), 
+            [](const auto& a, const auto& b) { return a.first < b.first; });
 
-        // Încărcăm nivelurile în ordinea sortată
+        // Cream un vector de dimensiunea corectă
+        levels.resize(levelFiles.size());
+
+        // Încărcăm nivelurile în pozițiile corecte
         for (const auto& [index, path] : levelFiles) {
             std::cout << "Loading level " << index << " from: " << path << std::endl;
-            levels.push_back(loadLevelFromJson(path));
+            if (index >= 0 && static_cast<size_t>(index) < levels.size()) {
+                levels[index] = loadLevelFromJson(path);
+            }
         }
     } catch (const std::exception& e) {
         std::cerr << "Error loading levels: " << e.what() << std::endl;
@@ -95,9 +103,6 @@ void LoadLevels::parseSquareConfig(const nlohmann::json& j, SquareConfig& config
     if (j.contains("damageThreshold")) config.damageThreshold = j["damageThreshold"];
     if (j.contains("maxHealth")) config.maxHealth = j["maxHealth"];
     if (j.contains("invincibilityTime")) config.invincibilityTime = j["invincibilityTime"];
-    if (j.contains("max_velocity")) config.max_velocity = j["max_velocity"];
-    if (j.contains("acceleration")) config.acceleration = j["acceleration"];
-    if (j.contains("deceleration")) config.deceleration = j["deceleration"];
 }
 
 void LoadLevels::parseWallConfig(const nlohmann::json& j, WallConfig& config) {
@@ -110,6 +115,14 @@ void LoadLevels::parseWallConfig(const nlohmann::json& j, WallConfig& config) {
     if (j.contains("octavesCount")) config.octavesCount = j["octavesCount"];
     if (j.contains("amplitude")) config.amplitude = j["amplitude"];
     if (j.contains("persistance")) config.persistance = j["persistance"];
+
+    // Adăugăm parsarea parametrilor pentru path
+    if (j.contains("pathSeed")) config.pathSeed = j["pathSeed"];
+    if (j.contains("pathNodesCount")) config.pathNodesCount = j["pathNodesCount"];
+    if (j.contains("pathSamplesCount")) config.pathSamplesCount = j["pathSamplesCount"];
+    if (j.contains("pathOctavesCount")) config.pathOctavesCount = j["pathOctavesCount"];
+    if (j.contains("pathAmplitude")) config.pathAmplitude = j["pathAmplitude"];
+    if (j.contains("pathPersistance")) config.pathPersistance = j["pathPersistance"];
 }
 
 void LoadLevels::parseGameConfig(const nlohmann::json& j, GameConfig& config) {

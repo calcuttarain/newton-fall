@@ -55,6 +55,15 @@ struct WallConfig{
     unsigned int octavesCount = 3; //detaliile
     float amplitude = 3.f; //amplitudinea primei octave //1.5
     float persistance = 0.6f; //subunitar, cat de repede scade amplitudinea la fiecare octava //0.7
+
+    // Path generation parameters
+    int pathSeed = 42;
+    unsigned int pathNodesCount = 20;
+    unsigned int pathSamplesCount = 20000;
+    float pathAmplitude = 15.0f;
+    unsigned int pathOctavesCount = 3;
+    float pathPersistance = 0.6f;
+
 };
 
 struct GameConfig {
@@ -63,4 +72,5 @@ struct GameConfig {
     GroundConfig groundConfig;
     SquareConfig squareConfig;
     WallConfig wallConfig;
+
 };
