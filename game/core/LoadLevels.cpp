@@ -7,11 +7,13 @@ std::vector<GameConfig> LoadLevels::loadAllLevels(const std::string& levelsPath)
     std::vector<GameConfig> levels;
     
     try {
+        // Colectăm toate fișierele .json și le indexăm
         for (const auto& entry : std::filesystem::directory_iterator(levelsPath)) {
             if (entry.path().extension() == ".json") {
                 std::string filename = entry.path().stem().string();
                 try {
                     int index = std::stoi(filename);
+                    std::cout << "Found level file: " << filename << ".json" << " with index " << index << std::endl;
                     levelFiles.push_back({index, entry.path().string()});
                 } catch (const std::exception& e) {
                     std::cerr << "Skipping " << filename << ": not a number" << std::endl;
@@ -19,13 +21,19 @@ std::vector<GameConfig> LoadLevels::loadAllLevels(const std::string& levelsPath)
             }
         }
 
-        // Sortăm după index pentru a menține ordinea corectă
-        std::sort(levelFiles.begin(), levelFiles.end());
+        // Sortăm explicit folosind indexul numeric
+        std::sort(levelFiles.begin(), levelFiles.end(), 
+            [](const auto& a, const auto& b) { return a.first < b.first; });
 
-        // Încărcăm nivelurile în ordinea sortată
+        // Cream un vector de dimensiunea corectă
+        levels.resize(levelFiles.size());
+
+        // Încărcăm nivelurile în pozițiile corecte
         for (const auto& [index, path] : levelFiles) {
             std::cout << "Loading level " << index << " from: " << path << std::endl;
-            levels.push_back(loadLevelFromJson(path));
+            if (index >= 0 && static_cast<size_t>(index) < levels.size()) {
+                levels[index] = loadLevelFromJson(path);
+            }
         }
     } catch (const std::exception& e) {
         std::cerr << "Error loading levels: " << e.what() << std::endl;
