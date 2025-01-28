@@ -11,7 +11,7 @@ const deleteUserResolver = async (_, args, context) => {
 
         const user = await db.User.findOne({
             where: {
-                id: args.id,
+                id: context.user_id,
             }
         })
 
@@ -22,16 +22,13 @@ const deleteUserResolver = async (_, args, context) => {
         await user.destroy();
         return true;
   } catch (error) {
-    console.error("Error creating score:", error);
-    throw new Error("Unable to create score.");
+    console.error("Error deleting account:", error);
+    throw new Error("Unable to delete account.");
   }
 }
 
 const deleteUserMutation = {
     type: GraphQLBoolean,
-    args: {
-        id: {type: GraphQLInt},
-    },
     resolve: deleteUserResolver,
 };
 
