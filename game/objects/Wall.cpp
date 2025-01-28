@@ -19,9 +19,12 @@ Wall::Wall(const World &world, const WallConfig& config)
     // Generate path first
     pathPoints = pathNoise.generate(config.pathSeed);
 
-    // Then generate walls
-    leftWallpoints = perlinNoise.generate(config.leftWallSeed);
-    rightWallpoints = perlinNoise.generate(config.rightWallSeed);
+    // Generate single noise for both walls
+    auto wallNoise = perlinNoise.generate(config.leftWallSeed);
+    
+    // Copy noise for both walls
+    leftWallpoints = wallNoise;
+    rightWallpoints = wallNoise;
 
     processPoints();
 
@@ -33,23 +36,20 @@ Wall::Wall(const World &world, const WallConfig& config)
 }
 
 void Wall::processPoints() {
-    // Aplicăm mai întâi noise-ul pentru fiecare zid individual
-    float wallNoiseAmplitude = config.amplitude;
-
-    // Păstrăm noise-ul original pentru ziduri
-    std::vector<b2Vec2> leftWallNoise = leftWallpoints;
-    std::vector<b2Vec2> rightWallNoise = rightWallpoints;
+    // Păstrăm noise-ul original
+    std::vector<b2Vec2> baseNoise = leftWallpoints;
 
     // Aplicăm path-ul și spacing-ul
     for (size_t i = 0; i < leftWallpoints.size(); i++) {
         float pathOffset = pathPoints[i].x;
         
-        // Aplicăm noise-ul zidurilor și centrăm pe path
-        leftWallpoints[i].x = pathOffset - config.spacing / 2 + leftWallNoise[i].x;
-        rightWallpoints[i].x = pathOffset + config.spacing / 2 + rightWallNoise[i].x;
+        // Aplicăm același noise simetric pentru ambele ziduri
+        leftWallpoints[i].x = pathOffset - config.spacing / 2.0f + baseNoise[i].x;
+        rightWallpoints[i].x = pathOffset + config.spacing / 2.0f + baseNoise[i].x;
+        rightWallpoints[i].y = baseNoise[i].y; // Păstrăm aceeași coordonată Y
     }
 
-    // Inversăm punctele zidului din dreapta pentru a menține orientarea corectă
+    // Inversăm punctele zidului din dreapta doar pentru coliziuni corecte
     std::reverse(rightWallpoints.begin(), rightWallpoints.end());
 }
 

@@ -19,10 +19,10 @@
         "friction": 0.0,
         "bounciness": 0.5,
         "damageThreshold": 10.0,
-        "maxHealth": 200.0,
+        "maxHealth": 2000.0,
         "invincibilityTime": 1.0,
         "max_velocity": 25.0,     
-        "acceleration": 1.1,       
+        "acceleration": 10.1,       
         "deceleration": 0.5
 
     },
@@ -37,10 +37,10 @@
         "amplitude": 6,
         "persistance": 0.5,
         "pathSeed": 100,
-        "pathNodesCount": 50,
+        "pathNodesCount": 13,
         "pathSamplesCount": 20000,
-        "pathAmplitude": 14.0,
-        "pathOctavesCount": 2,
+        "pathAmplitude": 24.0,
+        "pathOctavesCount": 3,
         "pathPersistance": 0.5
     }
 }
