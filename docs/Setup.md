@@ -55,6 +55,17 @@ Execute the project binary:
 
 ### Step 7: Setup database
 Execute in a new terminal
+Install node 20
+For Linux
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+nvm install 20
+```
+For MacOS
+```bash
+brew install nvm
+nvm install 20
+```
 ```bash
 cd software-engineering-product-apples/backend
 ```
@@ -73,6 +84,15 @@ npm run test
 ```
 
 ### Step 8: Run the CLI for the game
+Install golang
+For Linux
+```bash
+sudo apt install golang-go
+```
+For MacOS
+```bash
+brew install go
+```
 Execute in a new terminal
 ```bash
 cd software-engineering-product-apples/client

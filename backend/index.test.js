@@ -38,14 +38,30 @@ const queryGraphql = (query, variables = {}) => {
 };
 
 describe('GraphQL API Tests', () => {
-    beforeEach(async () => {
-        // Ensure fresh state before each test
-        await queryGraphql(`
-            mutation {
-                deleteUser
+  beforeEach(async () => {
+    authToken = null; // Reset auth token
+
+    // Log in first to ensure deleteUser works
+    await queryGraphql(`
+        mutation {
+            login(credentials: { username: "Test", password: "aaaa" }) {
+                token
             }
-        `).catch(() => {}); // Ignore errors in case no user is logged in
-    });
+        }
+    `).then(response => {
+        if (response.data && response.data.login.token) {
+            authToken = response.data.login.token;
+        }
+    }).catch(() => {}); // Ignore errors if user doesn't exist
+
+    // Now try deleting the user
+    await queryGraphql(`
+        mutation {
+            deleteUser
+        }
+    `).catch(() => {}); // Ignore errors if user doesn't exist
+});
+
 
     test('Create User', async () => {
         const response = await queryGraphql(`
@@ -233,4 +249,96 @@ describe('GraphQL API Tests', () => {
 
         assert.equal(deleteResponse.data.deleteUser, true, 'User should be deleted');
     });
+    test('Fail to Create User with Existing Username', async () => {
+      await queryGraphql(`
+          mutation {
+              createUser(user: {
+                  name: "Test",
+                  password: "aaaa"
+              }) {
+                  id
+              }
+          }
+      `);
+  
+      const response = await queryGraphql(`
+          mutation {
+              createUser(user: {
+                  name: "Test",
+                  password: "aaaa"
+              }) {
+                  id
+              }
+          }
+      `);
+  
+      assert.ok(response.errors, 'Error should be returned when creating a user with an existing name');
+      assert.strictEqual(response.data.createUser, null, 'createUser should be null when failing');
+  });
+  
+  test('Fail to Login with Incorrect Credentials', async () => {
+      await queryGraphql(`
+          mutation {
+              createUser(user: {
+                  name: "Test",
+                  password: "aaaa"
+              }) {
+                  id
+              }
+          }
+      `);
+  
+      const response = await queryGraphql(`
+          mutation {
+              login(credentials: { username: "Test", password: "wrongpassword" }) {
+                  token
+              }
+          }
+      `);
+  
+      assert.ok(response.data, 'Response should contain data');
+      assert.ok(response.data.login, 'Response should contain login field');
+      assert.strictEqual(response.data.login.token, null, 'Token should be null for failed login');
+  });
+  
+  
+  
+  test('Fail to Create Score Without Login', async () => {
+      authToken = null; // Ensure no authentication
+  
+      const response = await queryGraphql(`
+          mutation {
+              createScore(score: {
+                  level: 1
+                  distance: 1000
+                  time: 100
+                  hpFinal: 100
+                  totalScore: 10000
+              }) {
+                  id
+              }
+          }
+      `);
+  
+      assert.ok(response.errors, 'Error should be returned when trying to create a score without login');
+  });
+  
+  test('Fail to Query High Score Without Login', async () => {
+      authToken = null; // Ensure no authentication
+  
+      const response = await queryGraphql(`
+          query {
+              highScore(level: 1) {
+                  level
+                  distance
+                  time
+                  hpFinal
+                  totalScore
+              }
+          }
+      `);
+  
+      assert.ok(response.errors, 'Error should be returned when querying high scores without login');
+  });
+  
 });
