@@ -13,8 +13,15 @@ export default (sequelize, DataTypes) => {
     }
   }
   User.init({
-    name: DataTypes.STRING,
-    password: DataTypes.STRING
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true, // Ensure uniqueness at the model level
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
   }, {
     sequelize,
     modelName: 'User',
