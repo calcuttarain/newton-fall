@@ -386,10 +386,10 @@ def continue_train_agent(agent, selected_level, experiment_name, train_round=2):
         print("Error plotting info")
     
 
-
+#get selected level as argument
 if len(sys.argv) > 1:
-    arg = sys.argv[1]  # Get the first argument
-    if arg.isdigit():  # Check if it's a digit
+    arg = sys.argv[1]
+    if arg.isdigit(): 
         selected_level = int(arg)
     else:
         print("Invalid input. Using default value 0.")
