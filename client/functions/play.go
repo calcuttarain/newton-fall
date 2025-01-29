@@ -20,7 +20,8 @@ func Play(level int) {
 		return
 	}
 	// Run the external program
-	cmd := exec.Command("../build/Release/bin/newtons_fall", strconv.Itoa(level))
+	cmd := exec.Command("./build/Release/bin/newtons_fall")//, strconv.Itoa(level))
+	cmd.Dir = ".."
 	err := cmd.Run()
 	if err != nil {
 		fmt.Println("Error running the program:", err)
