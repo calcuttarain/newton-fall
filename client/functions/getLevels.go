@@ -7,10 +7,10 @@ import (
     "strings"
 )
 
-func GetLevels() {
-    if(Token==""){
+func GetLevelsList() []string{
+	if(Token==""){
         fmt.Println("The user is not logged in!");
-        return
+        return []string{}
     }
 	// Define the directory path where the levels are stored
 	dirPath := "../game/levels"
@@ -19,7 +19,7 @@ func GetLevels() {
 	files, err := os.ReadDir(dirPath)
 	if err != nil {
 		fmt.Println("Error reading directory:", err)
-		return
+		return []string{}
 	}
 
 	// Iterate through the files and print their names
@@ -32,6 +32,20 @@ func GetLevels() {
 		}
 	}
 
-	// Print all the level names in a line
-	fmt.Println("Available levels:", levelNames)
+	return levelNames
+}
+
+func GetLevels() {
+    // Print all the level names in a line
+	fmt.Println("Available levels:", GetLevelsList)
+}
+
+func ContainsLevel(level string) bool {
+	for _, v := range GetLevelsList() {
+		if v == level {
+			return true
+		}
+	}
+
+	return false
 }

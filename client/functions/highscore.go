@@ -3,6 +3,7 @@ package functions
 import (
 	"client/connect"
 	"fmt"
+	"strconv"
 )
 
 func Highscore(level int) {
@@ -10,6 +11,10 @@ func Highscore(level int) {
         fmt.Println("The user is not logged in!");
         return
     }
+	if(!ContainsLevel(strconv.Itoa(level))){
+		fmt.Println("Level ",level," does not exist")
+		return
+	}
 	query := `
 	query highscore($level: Int!) {
 		highScore(level: $level) {

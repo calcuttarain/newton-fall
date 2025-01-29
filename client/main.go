@@ -54,11 +54,15 @@ func main() {
 				continue
 			}
 			level, _ := strconv.Atoi(args[0])
-			// distance, _ := strconv.ParseFloat(args[1], 64)
-			// time, _ := strconv.Atoi(args[2])
-			// hpfinal, _ := strconv.Atoi(args[3])
-			// totalScore, _ := strconv.Atoi(args[4])
 			functions.Play(level)
+
+		case "runRL":
+			if len(args) != 1 {
+				fmt.Println("Usage: runRL <level>")
+				continue
+			}
+			level, _ := strconv.Atoi(args[0])
+			functions.RunRL(level)
 
 		case "register":
 			if len(args) != 2 {
@@ -98,7 +102,8 @@ func main() {
 
 		case "help":
 			fmt.Println("Available commands:")
-			fmt.Println("  addScore <level> <distance> <time> <hpfinal> <totalScore>")
+			fmt.Println("  play <level>")
+			fmt.Println("  runRL <level>")
 			fmt.Println("  register <name> <password>")
 			fmt.Println("  deleteAccount")
 			fmt.Println("  login <name> <password>")
