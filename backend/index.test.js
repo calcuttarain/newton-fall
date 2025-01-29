@@ -1,15 +1,14 @@
-import { test, describe, before, after, beforeEach } from 'node:test';
+import { test, describe, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import http, { createServer } from 'node:http';
-import app from './app.js';
+import http from 'node:http';
 
-let server;
 const PORT = 3001;
+let authToken = null;
 
-// Function to query graphql
-const queryGraphql = (data = null) => {
+// Function to send GraphQL queries
+const queryGraphql = (query, variables = {}) => {
     return new Promise((resolve, reject) => {
-        const postData = JSON.stringify(data);
+        const postData = JSON.stringify({ query, variables });
         const options = {
             method: 'POST',
             hostname: 'localhost',
@@ -18,6 +17,7 @@ const queryGraphql = (data = null) => {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(postData),
+                ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
             },
         };
 
@@ -27,116 +27,210 @@ const queryGraphql = (data = null) => {
                 body += chunk;
             });
             res.on('end', () => {
-                console.log('test:request:debug', body);
-                res.body = JSON.parse(body || '{}');
-                
-                resolve(res);
+                resolve(JSON.parse(body));
             });
         });
 
         req.on('error', reject);
-
-        if (data) {
-            req.write(JSON.stringify(data));
-        }
-
+        req.write(postData);
         req.end();
     });
 };
 
-server = createServer(app);
+describe('GraphQL API Tests', () => {
+    beforeEach(async () => {
+        // Ensure fresh state before each test
+        await queryGraphql(`
+            mutation {
+                deleteUser
+            }
+        `).catch(() => {}); // Ignore errors in case no user is logged in
+    });
 
-// Start the server before tests, and stop it after
-before(() => {
-    server.listen(PORT); // Start the server before tests
-});
+    test('Create User', async () => {
+        const response = await queryGraphql(`
+            mutation {
+                createUser(user: {
+                    name: "Test",
+                    password: "aaaa"
+                }) {
+                    id
+                    name
+                }
+            }
+        `);
 
-after(() => {
-    server.close(); // Stop the server after all tests
-});
+        assert.ok(response.data.createUser.id, 'User ID should be returned');
+        assert.equal(response.data.createUser.name, 'Test', 'User name should be Test');
+    });
 
-describe('E1 - Find user', () => {
-  test('should find one user', async () => {
-      const res = await queryGraphql({ query: '{ user(id: 1) { id, name } }' });
+    test('Login User', async () => {
+        await queryGraphql(`
+            mutation {
+                createUser(user: {
+                    name: "Test",
+                    password: "aaaa"
+                }) {
+                    id
+                    name
+                }
+            }
+        `);
 
-      assert.strictEqual(res.statusCode, 200);
-      assert.strictEqual(res.body.data.user.name, 'John');
-  });
-  test('should return null for user not found', async () => {
-    const res = await queryGraphql({ query: '{ user(id: 999999) { id, name } }' });
+        const response = await queryGraphql(`
+            mutation {
+                login(credentials: { username: "Test", password: "aaaa" }) {
+                    token
+                }
+            }
+        `);
+
+        assert.ok(response.data.login.token, 'Token should be returned');
+        authToken = response.data.login.token;
+    });
+
+    test('Create Score (Authorized)', async () => {
+        await queryGraphql(`
+            mutation {
+                createUser(user: {
+                    name: "Test",
+                    password: "aaaa"
+                }) {
+                    id
+                }
+            }
+        `);
+
+        const loginResponse = await queryGraphql(`
+            mutation {
+                login(credentials: { username: "Test", password: "aaaa" }) {
+                    token
+                }
+            }
+        `);
+        authToken = loginResponse.data.login.token;
+
+        const response = await queryGraphql(`
+            mutation {
+                createScore(score: {
+                    level: 1
+                    distance: 1000
+                    time: 100
+                    hpFinal: 100
+                    totalScore: 10000
+                }) {
+                    id
+                    level
+                    distance
+                    time
+                    hpFinal
+                    totalScore
+                }
+            }
+        `);
+
+        assert.ok(response.data.createScore.id, 'Score ID should be returned');
+        assert.equal(response.data.createScore.level, 1, 'Score level should be 1');
+        assert.equal(response.data.createScore.totalScore, 10000, 'Total score should be 10000');
+    });
+
+    test('Query High Score (Requires Login)', async () => {
+      // Create a user and log in to get a token
+      await queryGraphql(`
+          mutation {
+              createUser(user: {
+                  name: "Test",
+                  password: "aaaa"
+              }) {
+                  id
+              }
+          }
+      `);
   
-    assert.strictEqual(res.statusCode, 200);
-    assert.strictEqual(res.body.data.user, null);
-  });
-});
-
-describe('E2 - List users', () => {
-  test('should list all users', async () => {
-      const res = await queryGraphql({ query: '{ users {id, name} }' });
-
-      assert.strictEqual(res.statusCode, 200);
-      assert.strictEqual(res.body.data.users.length, 2);
-      assert.strictEqual(res.body.data.users[0].name, 'John');
-      assert.strictEqual(res.body.data.users[1].name, 'Mary');
-  });
-});
-
-describe('E3 - create user', () => {
-  test('should create a new user', async () => {
-      const res = await queryGraphql({ query: `mutation CreateUser { createUser(user: {name: "Example"}) }` });
-
-      assert.strictEqual(res.statusCode, 200);
-      console.log('test:body', res.body);
-
-      const resList = await queryGraphql({ query: '{ users {id, name} }' });
-      assert.strictEqual(resList.body.data.users.length, 3);
-      assert.strictEqual(resList.body.data.users[2].name, 'Example');
-  });
-});
-
-describe('E4 - update user', () => {
-  test('should update an existing user', async () => {
-      const res = await queryGraphql({ query: `mutation UpdateUser { updateUser(id: 1, user: {name: "Jean"}) {id, name} }` });
-
-      assert.strictEqual(res.statusCode, 200);
-      assert.strictEqual(res.body.data.updateUser.name, 'Jean');
-  });
-
-  test('should not update an non-existing user', async () => {
-    const res = await queryGraphql({ query: `mutation UpdateUser { updateUser(id: 999, user: {name: "Jean"}) {id, name} }` });
-
-    assert.strictEqual(res.statusCode, 200);
-    assert.strictEqual(res.body.data.updateUser, null);
-});
-});
-
-describe('E5 - delete user', () => {
-  test('should delete an existing user', async () => {
-      const res = await queryGraphql({ query: `mutation DeleteUser { deleteUser(id: 1) }` });
-
-      assert.strictEqual(res.statusCode, 200);
-      
-      const resList = await queryGraphql({ query: '{ users {id, name} }' });
-      assert.notStrictEqual(resList.body.data.users[0].name, 'Jean');
-      assert.notStrictEqual(resList.body.data.users[0].name, 'John');
+      const loginResponse = await queryGraphql(`
+          mutation {
+              login(credentials: { username: "Test", password: "aaaa" }) {
+                  token
+              }
+          }
+      `);
+      authToken = loginResponse.data.login.token;
+  
+      // Ensure a high score exists before querying
+      await queryGraphql(`
+          mutation {
+              createScore(score: {
+                  level: 1
+                  distance: 100
+                  time: 100
+                  hpFinal: 100
+                  totalScore: 1000
+              }) {
+                  id
+              }
+          }
+      `);
+  
+      // Now query high scores with authentication
+      const response = await queryGraphql(`
+          query {
+              highScore(level: 1) {
+                  level
+                  distance
+                  time
+                  hpFinal
+                  totalScore
+              }
+          }
+      `);
+  
+      assert.ok(response.data, 'Response data should not be null');
+      assert.ok(response.data.highScore, 'High score should be returned');
+      assert.equal(response.data.highScore.level, 1, 'Level should be 1');
+      assert.ok(Number.isInteger(response.data.highScore.totalScore), 'Total score should be an integer');
   });
 
-  test('should not delete an non-existing user', async () => {
-    const res = await queryGraphql({ query: `mutation DeleteUser { deleteUser(id: 9999) }` });
+    test('Query Top 10 Scores', async () => {
+        const response = await queryGraphql(`
+            query {
+                top10Scores(level: 1) {
+                    id
+                    level
+                    totalScore
+                }
+            }
+        `);
 
-    assert.strictEqual(res.statusCode, 200);
-    assert.strictEqual(res.body.data.deleteUser, null);
-});
-});
+        assert.ok(Array.isArray(response.data.top10Scores), 'Top 10 scores should be an array');
+    });
 
+    test('Delete User (Requires Login)', async () => {
+        await queryGraphql(`
+            mutation {
+                createUser(user: {
+                    name: "Test",
+                    password: "aaaa"
+                }) {
+                    id
+                }
+            }
+        `);
 
+        const loginResponse = await queryGraphql(`
+            mutation {
+                login(credentials: { username: "Test", password: "aaaa" }) {
+                    token
+                }
+            }
+        `);
+        authToken = loginResponse.data.login.token;
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  process.exit(1);
-});
+        const deleteResponse = await queryGraphql(`
+            mutation {
+                deleteUser
+            }
+        `);
 
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception thrown:', err);
-  process.exit(1);
+        assert.equal(deleteResponse.data.deleteUser, true, 'User should be deleted');
+    });
 });

@@ -67,13 +67,20 @@ npm install
 ```bash
 npm run start
 ```
+For testing the database open a new terminal in the backend folder and run
+```bash
+npm run test
+```
 
 ### Step 8: Run the CLI for the game
 Execute in a new terminal
 ```bash
 cd software-engineering-product-apples/client
 ```
-create an .env file in this file with the structure: BACKEND=database_url
+create an .env file in this folder with the structure: 
+```.env
+BACKEND=database_url
+```
 ```bash
 go run main.go
 ```
