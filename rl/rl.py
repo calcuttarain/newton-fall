@@ -111,7 +111,7 @@ def take_step(Game, agent, score, debug=False, training=True):
     """
     agent.total_timesteps += 1
     if training and agent.total_timesteps % 50000 == 0:
-        torch.save(agent.model.state_dict(), 'recent_weights.pth')
+        torch.save(agent.model.state_dict(), 'rl/exp/recent_weights.pth')
         print('\nWeights saved temporarily!')
 
     # Perform the next action and get the next frame and reward
@@ -120,9 +120,10 @@ def take_step(Game, agent, score, debug=False, training=True):
     next_frame = np.array(Game.getLastFrame())
     health = Game.getHealth()
     positionY = int(Game.getPositionY()/100)
-    reward = (health - prev_health) - ((2**positionY) / 16)
+    positionX = int(Game.getPositionX())//3
+    reward = (health - prev_health) - abs(positionX)
     if Game.isWin():
-        reward = reward + 5000
+        reward = reward + 500000
     done = Game.isGameOver()
 
     # Preprocess next frame and construct new state
@@ -308,8 +309,8 @@ def train_agent(agent, selected_level, experiment_name):
 
         if i%100==0 and i!=0:
             last_100_avg.append(sum(scores)/len(scores))
-            torch.save(agent.model.state_dict(), f'exp_{experiment_name}.pth')
-            torch.save(agent.model_target.state_dict(), f'exp_{experiment_name}_target.pth')
+            torch.save(agent.model.state_dict(), f'rl/exp/exp_{experiment_name}.pth')
+            torch.save(agent.model_target.state_dict(), f'rl/exp/exp_{experiment_name}_target.pth')
     
     try:
         plt.plot(np.arange(0,i+1,100),last_100_avg)
@@ -326,8 +327,8 @@ def test_agent(agent, selected_level, experiment_name):
         print("No levels found!")
         return
     # selected_level = 4
-    agent.model.load_state_dict(torch.load(f"exp_{experiment_name}.pth", weights_only=True))
-    agent.model_target.load_state_dict(torch.load(f"exp_{experiment_name}_target.pth", weights_only=True))
+    agent.model.load_state_dict(torch.load(f"rl/exp/exp_{experiment_name}.pth", weights_only=True))
+    agent.model_target.load_state_dict(torch.load(f"rl/exp/exp_{experiment_name}_target.pth", weights_only=True))
     agent.model.eval()
     agent.model_target.eval()
     Game = make_Game()
@@ -347,8 +348,8 @@ def continue_train_agent(agent, selected_level, experiment_name, train_round=2):
         print("No levels found!")
         return
     # selected_level = 4
-    agent.model.load_state_dict(torch.load(f"exp_{experiment_name}.pth", weights_only=True))
-    agent.model_target.load_state_dict(torch.load(f"exp_{experiment_name}_target.pth", weights_only=True))
+    agent.model.load_state_dict(torch.load(f"rl/exp/exp_{experiment_name}.pth", weights_only=True))
+    agent.model_target.load_state_dict(torch.load(f"rl/exp/exp_{experiment_name}_target.pth", weights_only=True))
     Game = make_Game()
     last_100_avg = [-700]
     scores = deque(maxlen = 100)
@@ -375,8 +376,8 @@ def continue_train_agent(agent, selected_level, experiment_name, train_round=2):
 
         if i%100==0 and i!=0:
             last_100_avg.append(sum(scores)/len(scores))
-            torch.save(agent.model.state_dict(), f'exp_{experiment_name}_v{train_round}.pth')
-            torch.save(agent.model_target.state_dict(), f'exp_{experiment_name}_v{train_round}_target.pth')
+            torch.save(agent.model.state_dict(), f'rl/exp/exp_{experiment_name}_v{train_round}.pth')
+            torch.save(agent.model_target.state_dict(), f'rl/exp/exp_{experiment_name}_v{train_round}_target.pth')
     
     try:
         plt.plot(np.arange(0,i+1,100),last_100_avg)
@@ -386,7 +387,18 @@ def continue_train_agent(agent, selected_level, experiment_name, train_round=2):
     
 
 
-agent = Agent(possible_actions=[0,1,2],starting_mem_len=1000,max_mem_len=750000,starting_epsilon=1,learn_rate=.0005)
+if len(sys.argv) > 1:
+    arg = sys.argv[1]  # Get the first argument
+    if arg.isdigit():  # Check if it's a digit
+        selected_level = int(arg)
+    else:
+        print("Invalid input. Using default value 0.")
+        selected_level = 0
+else:
+    selected_level = 0
+
+# agent = Agent(possible_actions=[0,1,2],starting_mem_len=1000,max_mem_len=750000,starting_epsilon=1,learn_rate=.0005)
 agent_test = Agent(possible_actions=[0,1,2],starting_mem_len=1000,max_mem_len=750000,starting_epsilon=0.05,learn_rate=.0005)
-# train_agent(agent, selected_level=0, experiment_name="getPosY_h660_fps40")
-test_agent(agent_test, selected_level=0, experiment_name="getPosY_h660_fps40")
+# train_agent(agent, selected_level=0, experiment_name="getPosX_h500_fps40")
+test_agent(agent_test, selected_level=selected_level, experiment_name="getPosX_h500_fps40_v2")
+# continue_train_agent(agent, selected_level=0, experiment_name="getPosX_h500_fps40", train_round=2)

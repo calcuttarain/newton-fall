@@ -175,3 +175,7 @@ float Game::getHealth() const {
 float Game::getPositionY() const{
     return square ? square->getPosition().y : 0.0f;
 }
+
+float Game::getPositionX() const{
+    return square ? square->getPosition().x : 0.0f;
+}
