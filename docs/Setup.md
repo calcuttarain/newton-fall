@@ -52,3 +52,28 @@ Execute the project binary:
 ```bash
 ./build/Release/bin/newtons_fall
 ```
+
+### Step 7: Setup database
+Execute in a new terminal
+```bash
+cd software-engineering-product-apples/backend
+```
+```bash
+npm install
+```
+```bash
+./refresh.sh
+```
+```bash
+npm run start
+```
+
+### Step 8: Run the CLI for the game
+Execute in a new terminal
+```bash
+cd software-engineering-product-apples/client
+```
+create an .env file in this file with the structure: BACKEND=database_url
+```bash
+go run main.go
+```
