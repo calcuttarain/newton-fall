@@ -34,3 +34,10 @@ Thumbs.db
 
 .cache/
 compile_commands.json
+
+# Node
+db.sqlite
+db.test.sqlite
+.DS_Store
+node_modules
+.env
