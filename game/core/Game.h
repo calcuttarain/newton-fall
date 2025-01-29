@@ -61,4 +61,5 @@ public:
     bool isWin() const { return hasWon; }
     float getHealth() const;
     float getPositionY() const;
+    float getPositionX() const;
 };
