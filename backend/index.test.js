@@ -206,19 +206,59 @@ describe('GraphQL API Tests', () => {
       assert.ok(Number.isInteger(response.data.highScore.totalScore), 'Total score should be an integer');
   });
 
-    test('Query Top 10 Scores', async () => {
-        const response = await queryGraphql(`
-            query {
-                top10Scores(level: 1) {
+  test('Query Top 10 Scores', async () => {
+    // Create a user and log in to get a token
+    await queryGraphql(`
+        mutation {
+            createUser(user: {
+                name: "Test",
+                password: "aaaa"
+            }) {
+                id
+            }
+        }
+    `);
+
+    const loginResponse = await queryGraphql(`
+        mutation {
+            login(credentials: { username: "Test", password: "aaaa" }) {
+                token
+            }
+        }
+    `);
+    authToken = loginResponse.data.login.token;
+
+    // Insert multiple test scores
+    for (let i = 1; i <= 15; i++) {
+        await queryGraphql(`
+            mutation {
+                createScore(score: {
+                    level: 1
+                    distance: ${i * 100}
+                    time: ${i * 10}
+                    hpFinal: 100
+                    totalScore: ${i * 1000}
+                }) {
                     id
-                    level
-                    totalScore
                 }
             }
         `);
+    }
 
-        assert.ok(Array.isArray(response.data.top10Scores), 'Top 10 scores should be an array');
-    });
+    // Query top 10 scores
+    const response = await queryGraphql(`
+        query {
+            top10Scores(level: 1) {
+                id
+                level
+                totalScore
+            }
+        }
+    `);
+
+    assert.ok(Array.isArray(response.data.top10Scores), 'Top 10 scores should be an array');
+    assert.equal(response.data.top10Scores.length, 10, 'Should return exactly 10 scores');
+});
 
     test('Delete User (Requires Login)', async () => {
         await queryGraphql(`
