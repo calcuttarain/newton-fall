@@ -3,10 +3,10 @@ name: Test GraphQL API
 on: 
   push:
     branches:
-      - AUTH-&-wrapper
+      - Testing
   pull_request:
     branches:
-      - AUTH-&-wrapper
+      - Testing
 
 jobs:
   build:
