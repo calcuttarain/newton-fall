@@ -19,7 +19,8 @@ func RunRL(level int) {
 		return
 	}
 	//Run the external program
-	cmd := exec.Command("python3", "../rl/rl.py",strconv.Itoa(level))
+	cmd := exec.Command(".venv/bin/python", "./rl/rl.py",strconv.Itoa(level))
+	cmd.Dir = ".."
 	err := cmd.Run()
 	if err != nil {
 		fmt.Println("Error running the program:", err)
