@@ -3,42 +3,42 @@
         "backgroundSize": [800.0, 10000.0],
         "windowSize": [1920.0, 1080.0],
         "viewSize": [90.0, 60.0],
-        "fps": 140.0
+        "fps": 40.0
     },
     "world": {
-        "gravity": [0.0, -15.8]
+        "gravity": [0.0, -18.5]
     },
     "ground": {
         "position": [0.0, 0.0],
         "size": [90.0, 60.0]
     },
     "square": {
-        "position": [0.0, 660.0],
+        "position": [0.0, 700.0],
         "size": [4.0, 4.0],
         "density": 1.0,
-        "friction": 0.0,
+        "friction": 0.1,
         "bounciness": 0.5,
-        "damageThreshold": 10.0,
-        "maxHealth": 500.0,
+        "damageThreshold": 8.5,
+        "maxHealth": 420.0,
         "invincibilityTime": 1.0,
-        "max_velocity": 25.0,     
-        "acceleration": 10.1,       
-        "deceleration": 0.5
+        "max_velocity": 25.0,
+        "acceleration": 12.0,
+        "deceleration": 0.6
     },
     "wall": {
-        "height": 660.0,
-        "spacing": 50.0,
+        "height": 750.0,
+        "spacing": 40.0,
         "leftWallSeed": 120,
         "rightWallSeed": 140,
-        "nodesCount": 150,
-        "samplesCount": 20000,
-        "octavesCount": 4,
-        "amplitude": 6,
+        "nodesCount": 170,
+        "samplesCount": 22000,
+        "octavesCount": 5,
+        "amplitude": 8,
         "persistance": 0.5,
-        "pathSeed": 100,
-        "pathNodesCount": 13,
-        "pathSamplesCount": 20000,
-        "pathAmplitude": 24.0,
+        "pathSeed": 110,
+        "pathNodesCount": 14,
+        "pathSamplesCount": 22000,
+        "pathAmplitude": 29.0,
         "pathOctavesCount": 3,
         "pathPersistance": 0.5
     }

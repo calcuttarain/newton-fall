@@ -6,40 +6,39 @@
         "fps": 140.0
     },
     "world": {
-        "gravity": [0.0, -15.8]
+        "gravity": [0.0, -16.0]
     },
     "ground": {
         "position": [0.0, 0.0],
         "size": [90.0, 60.0]
     },
     "square": {
-        "position": [0.0, 200.0],
+        "position": [0.0, 680.0],
         "size": [4.0, 4.0],
         "density": 1.0,
-        "friction": 0.0,
+        "friction": 0.05,
         "bounciness": 0.5,
-        "damageThreshold": 10.0,
-        "maxHealth": 2000.0,
+        "damageThreshold": 9.5,
+        "maxHealth": 480.0,
         "invincibilityTime": 1.0,
-        "max_velocity": 50.0,     
-        "acceleration": 10.1,       
-        "deceleration": 0.5
-
+        "max_velocity": 25.0,
+        "acceleration": 11.0,
+        "deceleration": 0.55
     },
     "wall": {
-        "height": 660.0,
-        "spacing": 50.0,
-        "leftWallSeed": 120,
-        "rightWallSeed": 140,
-        "nodesCount": 150,
-        "samplesCount": 20000,
+        "height": 730.0,
+        "spacing": 45.0,
+        "leftWallSeed": 130,
+        "rightWallSeed": 150,
+        "nodesCount": 160,
+        "samplesCount": 21000,
         "octavesCount": 4,
-        "amplitude": 6,
+        "amplitude": 7,
         "persistance": 0.5,
-        "pathSeed": 100,
-        "pathNodesCount": 13,
-        "pathSamplesCount": 20000,
-        "pathAmplitude": 0.0,
+        "pathSeed": 110,
+        "pathNodesCount": 14,
+        "pathSamplesCount": 21000,
+        "pathAmplitude": 27.0,
         "pathOctavesCount": 3,
         "pathPersistance": 0.5
     }

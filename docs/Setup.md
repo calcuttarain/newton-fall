@@ -47,6 +47,11 @@ Configure and build the project using Conan:
 conan build .
 ```
 
+Configure Debug build:
+```bash
+conan install . -s build_type=Debug 
+```
+
 ### Step 6: Run the Project
 Execute the project binary:
 ```bash
