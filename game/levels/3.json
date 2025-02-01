@@ -1,0 +1,45 @@
+{
+    "display": {
+        "backgroundSize": [800.0, 10000.0],
+        "windowSize": [1920.0, 1080.0],
+        "viewSize": [90.0, 60.0],
+        "fps": 40.0
+    },
+    "world": {
+        "gravity": [0.0, -20.0]
+    },
+    "ground": {
+        "position": [0.0, 0.0],
+        "size": [90.0, 60.0]
+    },
+    "square": {
+        "position": [0.0, 800.0],
+        "size": [4.0, 4.0],
+        "density": 1.0,
+        "friction": 0.12,
+        "bounciness": 0.5,
+        "damageThreshold": 7.5,
+        "maxHealth": 700.0,
+        "invincibilityTime": 1.0,
+        "max_velocity": 250.0,
+        "acceleration": 30.0,
+        "deceleration": 0.65
+    },
+    "wall": {
+        "height": 990.0,
+        "spacing": 35.0,
+        "leftWallSeed": 115,
+        "rightWallSeed": 135,
+        "nodesCount": 180,
+        "samplesCount": 23000,
+        "octavesCount": 6,
+        "amplitude": 10,
+        "persistance": 0.5,
+        "pathSeed": 115,
+        "pathNodesCount": 12,
+        "pathSamplesCount": 23000,
+        "pathAmplitude": 20.0,
+        "pathOctavesCount": 3,
+        "pathPersistance": 0.5
+    }
+}
