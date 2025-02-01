@@ -4,6 +4,12 @@
 
 Newton's Fall is a simulation game designed for casual and competitive gamers who enjoy physics-based challenges and endless progression.
 
+## Demo
+
+> **[Newton's Fall Demo](https://youtu.be/39t_U1C7apA)**
+>
+> Click the link above to view the demo video.
+
 ## Table of Contents
 
 - [Product Vision](./docs/ProductVision.md)
