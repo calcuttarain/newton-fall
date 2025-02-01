@@ -1,8 +1,4 @@
 #include "Game.h"
-#include <box2d/box2d.h>
-#include <iostream>
-#include <cmath>
-#include <random>
 
 /**
  * Initializes all game systems and entities
@@ -64,7 +60,7 @@ void Game::render() {
 
 void Game::update() {
     square->processContactEvents(world->getWorldId());
-    processGroundCollision();  // Add this line
+    processGroundCollision();
     
     float deltaTime = 1.0f / config.displayConfig.fps;
     square->update(deltaTime);
@@ -73,6 +69,8 @@ void Game::update() {
     // Verificăm dacă jocul s-a terminat 
     if (square->getHealth() <= 0) {
         gameOver = true;
+        distanceTraveled = initialY - square->getPosition().y;
+        saveStats();
         std::cout << "Game Over!" << std::endl;
     }
 }
@@ -95,6 +93,9 @@ void Game::loadConfig(const GameConfig& newConfig) {
     wall = std::make_unique<Wall>(*world, config.wallConfig);
     background = std::make_unique<Background>(config.displayConfig.backgroundSize);
     camera = std::make_unique<Camera>(config.displayConfig.viewSize);
+    initialY = config.squareConfig.position.y;
+    gameTime = 0.0f;
+    distanceTraveled = 0.0f;
 }
 
 void Game::restart() {
@@ -105,6 +106,7 @@ void Game::restart() {
 
 void Game::step(int action) {
     float timeStep = 1.0f / config.displayConfig.fps;
+    gameTime += timeStep;
     
     switch(action) {
         case 1: // LEFT
@@ -162,10 +164,32 @@ void Game::processGroundCollision() {
             if (isSquareGroundCollision) {
                 hasWon = true;
                 gameOver = true;
+                distanceTraveled = initialY - square->getPosition().y;
+                saveStats();
                 std::cout << "Level Complete! Health remaining: " << square->getHealth() << std::endl;
             }
         }
     }
+}
+
+void Game::saveStats() {
+    float hpFinal = square->getHealth();
+    float finalDistance = distanceTraveled;
+    float totalScore = hpFinal * 2 + finalDistance * 5 - gameTime;
+    if (totalScore < 0) totalScore = 0;
+    
+    std::ofstream file("client/stats.txt", std::ios::trunc); 
+    if (file.is_open()) {
+        file << finalDistance << "\n"
+             << gameTime << "\n"
+             << hpFinal << "\n"
+             << totalScore;
+        file.close();
+    } 
+}
+
+float Game::getDistanceTraveled() const {
+    return initialY - square->getPosition().y;
 }
 
 float Game::getHealth() const {

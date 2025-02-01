@@ -19,7 +19,7 @@
         "friction": 0.0,
         "bounciness": 0.5,
         "damageThreshold": 10.0,
-        "maxHealth": 2000.0,
+        "maxHealth": 500.0,
         "invincibilityTime": 1.0,
         "max_velocity": 25.0,     
         "acceleration": 10.1,       

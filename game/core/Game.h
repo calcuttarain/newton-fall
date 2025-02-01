@@ -13,6 +13,12 @@
 #include "World.h"
 #include "Wall.h"
 
+
+#include <iostream>
+#include <cmath>
+#include <random>
+#include <fstream>
+
 /**
  * Main Game Class
  * 
@@ -45,9 +51,14 @@ private:
     sf::Image lastFrame;
     bool hasWon = false;
 
+    float gameTime = 0.0f;
+    float initialY = 0.0f;
+    float distanceTraveled = 0.0f;
+
     void update();  // Updates game state
     void render();  // Renders frame
     void processGroundCollision();  // New method
+    void saveStats();
 
 public:
     Game(bool instantiate = true);     // Initializes game systems
@@ -62,4 +73,6 @@ public:
     float getHealth() const;
     float getPositionY() const;
     float getPositionX() const;
+    float getDistanceTraveled() const;
+    float getGameTime() const { return gameTime; }
 };
