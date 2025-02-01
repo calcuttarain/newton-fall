@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 
 #include "GameConfig.h"
@@ -50,6 +51,8 @@ private:
     bool instantiate;
     sf::Image lastFrame;
     bool hasWon = false;
+
+    sf::Music backgroundMusic;
 
     float gameTime = 0.0f;
     float initialY = 0.0f;

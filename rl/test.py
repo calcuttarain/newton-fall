@@ -41,7 +41,7 @@ import random
 
 
 
-def play_game(game, duration=100.0):
+def play_game(game, duration=500.0):
     start_time = time.time()
     while not game.isGameOver() and (time.time() - start_time) < duration:
         # Simulăm un comportament natural de control

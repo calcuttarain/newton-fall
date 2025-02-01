@@ -83,6 +83,12 @@ void Game::loadConfig(const GameConfig& newConfig) {
         window.create(sf::VideoMode(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y),
                      "Newton's Fall");
         window.setFramerateLimit(config.displayConfig.fps);
+
+        if (!backgroundMusic.openFromFile("game/assets/summer_nights.ogg")) {
+            std::cerr << "Eroare la încărcarea muzicii!" << std::endl;
+        }
+        backgroundMusic.setLoop(true); 
+        backgroundMusic.play();       
     }
     else 
         texture.create(config.displayConfig.windowSize.x, config.displayConfig.windowSize.y);

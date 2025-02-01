@@ -3,7 +3,7 @@
         "backgroundSize": [800.0, 10000.0],
         "windowSize": [1920.0, 1080.0],
         "viewSize": [90.0, 60.0],
-        "fps": 40.0
+        "fps": 140.0
     },
     "world": {
         "gravity": [0.0, -15.8]
