@@ -25,8 +25,8 @@ Newton's Fall is a simulation game designed for casual and competitive gamers wh
 
 ## Team Members
 
-- Ioan-Paul Ciobanu
-- Stefan Mocanu
-- Tudor Pistol
-- Teofil Simiraș
-- Gabriel-Lucian Țilică
+- [Ioan-Paul Ciobanu](https://github.com/CiobanuPaul)
+- [Stefan Mocanu](https://github.com/Stefan-Mocanu)
+- [Tudor Pistol](https://github.com/calcuttarain)
+- [Teofil Simiraș](https://github.com/teofilq)
+- [Gabriel-Lucian Țilică](https://github.com/ZiGabiZi)
