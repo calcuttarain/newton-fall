@@ -59,4 +59,3 @@
 - **Task:** Add a hint system to provide guidance to players on how to avoid obstacles.
 - **Priority:** Low
 - **Estimation:** 3 days
-- 

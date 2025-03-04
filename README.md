@@ -2,7 +2,13 @@
 
 ## Overview
 
-Newton's Fall is a simulation game designed for casual and competitive gamers who enjoy physics-based challenges and endless progression.
+Newton's Fall is a dynamic 2D game blending physics-based challenges with an endless falling mechanic. 
+Built with Box2D for realistic physics and SFML for rendering, it features procedurally generated levels, 
+varied obstacles, a reinforcement learning component, and a modular design for extensibility.
+
+This project also includes a Go-based backend, featuring a CLI menu for user interactions and a server component that coordinates with the main application. It handles authentication, resource management, and communication with the Node.js server.
+
+Additionally, the system incorporates a database (SQLite) to store user information, scores, and other relevant details, ensuring persistent data management and seamless integration with both the Go-based backend and Node.js server.
 
 ## Demo
 
